@@ -1,72 +1,13 @@
-<template>
-  <div class="pagina-login">
-    <div class="cadastro">
-      <div class="titulo-cadastro">Login</div>
-
-      <div class="infos-cadastro">
-        <div class="input-box">
-          <input type="text" v-model="form.nome" id="user-nome" class="input-cadastro" required />
-          <label for="user-nome" class="label">Nome</label>
-          <div class="icon">
-            <i class="fa-solid fa-user"></i>
-          </div>
-        </div>
-
-        <div class="input-box">
-          <input type="text" v-model="form.sobrenome" id="user-sobrenome" class="input-cadastro" required />
-          <label for="user-sobrenome" class="label">Sobrenome</label>
-          <div class="icon">
-            <i class="fa-solid fa-user"></i>
-          </div>
-        </div>
-
-        <div class="input-box">
-          <input type="email" v-model="form.email" id="email" class="input-cadastro" required />
-          <label for="email" class="label">E-mail</label>
-          <div class="icon">
-            <i class="fa-solid fa-envelope"></i>
-          </div>
-        </div>
-
-        <div class="input-box">
-          <input type="password" v-model="form.senha" id="pass" class="input-cadastro" required />
-          <label for="pass" class="label">Senha</label>
-          <div class="icon">
-            <i class="fa-solid fa-lock"></i>
-          </div>
-        </div>
-      </div>
-
-      <button class="botao-acesso" @click="handleLogin">Acessar</button>
-
-      <div class="botao-login">
-        Ainda não tem uma conta?
-        <div class="login-botao">
-          <router-link to="/cadastro">Criar</router-link>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script setup>
-import { reactive } from 'vue'
-
-const form = reactive({
-  nome: '',
-  sobrenome: '',
-  email: '',
-  senha: ''
-})
-
-function handleLogin() {
-  console.log('Dados do login:', form)
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #000;
 }
-</script>
 
-<style scoped>
-/* Copie aqui o CSS que você quer que seja scoped só a esse componente */
-/* Por exemplo, o que te passei antes, ou um subset dele */
+html {
+    scroll-behavior: smooth;
+}
 
 .pagina-login {
     font-family: "Poppins", sans-serif;
@@ -74,16 +15,18 @@ function handleLogin() {
     color: #fff;
     background-color: #000;
     background-size: cover;
-    background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 20px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
 }
 
+/* Container principal */
 .cadastro {
-    position: relative;
+    position: center;
     width: 100%;
     max-width: 450px;
     backdrop-filter: blur(25px);
@@ -93,6 +36,7 @@ function handleLogin() {
     box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* Inputs */
 .input-box {
     position: relative;
     display: grid;
@@ -124,6 +68,7 @@ function handleLogin() {
     padding: 0 10px;
 }
 
+/* Label */
 .label {
     position: absolute;
     top: 15px;
@@ -131,6 +76,7 @@ function handleLogin() {
     transition: 0.2s;
 }
 
+/* Título */
 .titulo-cadastro {
     display: flex;
     align-items: center;
@@ -140,6 +86,11 @@ function handleLogin() {
     margin-bottom: 20px;
 }
 
+.titulo-cadastro span {
+    color: #adaeb0;
+}
+
+/* Ícone dos inputs */
 .icon {
     position: absolute;
     top: 12px;
@@ -147,6 +98,7 @@ function handleLogin() {
     font-size: 20px;
 }
 
+/* Botão principal */
 .botao-acesso {
     position: relative;
     width: 100%;
@@ -170,6 +122,7 @@ function handleLogin() {
     color: #ffffff;
 }
 
+/* Botão login (links) */
 .botao-login {
     margin-top: 20px;
     display: grid;
@@ -188,4 +141,3 @@ function handleLogin() {
     color: #feb7d9;
     transition: ease 1s;
 }
-</style>
