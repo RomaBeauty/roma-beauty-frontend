@@ -5,23 +5,23 @@
 
       <div class="infos-cadastro">
         <div class="input-box">
-          <input type="text" v-model="form.nome" id="user-nome" class="input-cadastro" required />
-          <label for="user-nome" class="label">Nome</label>
+          <input type="text" v-model="nome" id="nome" class="input-cadastro" required />
+          <label for="nome" class="label">Nome</label>
           <div class="icon">
             <i class="fa-solid fa-user"></i>
           </div>
         </div>
 
         <div class="input-box">
-          <input type="text" v-model="form.sobrenome" id="user-sobrenome" class="input-cadastro" required />
-          <label for="user-sobrenome" class="label">Sobrenome</label>
+          <input type="text" v-model="sobrenome" id="sobrenome" class="input-cadastro" required />
+          <label for="sobrenome" class="label">Sobrenome</label>
           <div class="icon">
             <i class="fa-solid fa-user"></i>
           </div>
         </div>
 
         <div class="input-box">
-          <input type="email" v-model="form.email" id="email" class="input-cadastro" required />
+          <input type="email" v-model="email" id="email" class="input-cadastro" required />
           <label for="email" class="label">E-mail</label>
           <div class="icon">
             <i class="fa-solid fa-envelope"></i>
@@ -29,8 +29,8 @@
         </div>
 
         <div class="input-box">
-          <input type="password" v-model="form.senha" id="pass" class="input-cadastro" required />
-          <label for="pass" class="label">Senha</label>
+          <input type="password" v-model="senha" id="senha" class="input-cadastro" required />
+          <label for="senha" class="label">Senha</label>
           <div class="icon">
             <i class="fa-solid fa-lock"></i>
           </div>
@@ -41,151 +41,176 @@
 
       <div class="botao-login">
         Ainda não tem uma conta?
-        <div class="login-botao">
-          <router-link to="/cadastro">Criar</router-link>
-        </div>
+        <router-link to="/cadastro">Criar</router-link>
       </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { ref } from 'vue'
 
-const form = reactive({
-  nome: '',
-  sobrenome: '',
-  email: '',
-  senha: ''
-})
+const nome = ref('')
+const sobrenome = ref('')
+const email = ref('')
+const senha = ref('')
 
 function handleLogin() {
-  console.log('Dados do login:', form)
+  console.log({
+    nome: nome.value,
+    sobrenome: sobrenome.value,
+    email: email.value,
+    senha: senha.value
+  })
 }
 </script>
 
 <style scoped>
-/* Copie aqui o CSS que você quer que seja scoped só a esse componente */
-/* Por exemplo, o que te passei antes, ou um subset dele */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #000;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+}
+
+/* Página principal */
 .pagina-login {
-    font-family: "Poppins", sans-serif;
-    line-height: 1.6;
-    color: #fff;
-    background-color: #000;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
+/* Container principal */
 .cadastro {
-    position: relative;
-    width: 100%;
-    max-width: 450px;
-    backdrop-filter: blur(25px);
-    border: 2px solid #fff;
-    border-radius: 15px;
-    padding: 5em 2.5em 4em 2.5em;
-    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
+  width: 60vh;
+  max-width: 600px;
+  height: auto;
+  backdrop-filter: blur(25px);
+  border: 2px solid #fff;
+  border-radius: 15px;
+  padding: 3rem 2rem;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  margin-left: 45vh;
 }
 
+/* Inputs */
 .input-box {
-    position: relative;
-    display: grid;
-    margin: 20px 0;
+  position: relative;
+  display: grid;
+  margin: 20px 0;
 }
 
 .input-cadastro {
-    width: 100%;
-    height: 55px;
-    font-size: 16px;
-    background: transparent;
-    padding-inline: 20px 50px;
-    border-radius: 30px;
-    outline: none;
-    text-decoration: none;
-    border: 1px solid #fff;
-    color: #fff;
+  width: 100%;
+  height: 55px;
+  font-size: 16px;
+  background: transparent;
+  padding-inline: 20px 50px;
+  border-radius: 30px;
+  outline: none;
+  border: 1px solid #fff;
+  color: #fff;
 }
 
-.input-cadastro:focus ~ .label,
-.input-cadastro:valid ~ .label {
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    font-size: 14px;
-    background-color: #e9e7e9;
-    border-radius: 30px;
-    color: #000;
-    padding: 0 10px;
+.input-cadastro:focus~.label,
+.input-cadastro:valid~.label {
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  font-size: 14px;
+  background-color: #e9e7e9;
+  border-radius: 30px;
+  color: #000;
+  padding: 0 10px;
+  transition: all 0.2s ease-in-out;
 }
 
+/* Label */
 .label {
-    position: absolute;
-    top: 15px;
-    left: 20px;
-    transition: 0.2s;
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  transition: 0.2s;
+  pointer-events: none;
 }
 
+/* Título do formulário */
 .titulo-cadastro {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
+/* Ícone dos inputs */
 .icon {
-    position: absolute;
-    top: 12px;
-    right: 25px;
-    font-size: 20px;
+  position: absolute;
+  top: 12px;
+  right: 25px;
+  font-size: 20px;
+  color: #fff;
 }
 
+/* Botão principal */
 .botao-acesso {
-    position: relative;
-    width: 100%;
-    height: 55px;
-    overflow: hidden;
-    padding: 15px 30px;
-    border-radius: 30px;
-    background-color: #fff;
-    color: #3a3a3a;
-    font-size: 1.2rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    z-index: 1;
-    transition: color 0.3s ease;
+  width: 30vh;
+  height: 55px;
+  padding: 15px 30px;
+  border-radius: 30px;
+  background-color: #fff;
+  color: #3a3a3a;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  margin-left: 10vh;
 }
+
 
 .botao-acesso:hover {
-    background-color: #feb7d9c1;
-    transition: ease 1s;
-    color: #ffffff;
+  background-color: #feb7d9c1;
+  color: #ffffff;
 }
 
+/* Botão de cadastro*/
 .botao-login {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: auto 30px;
-    margin-left: 10px;
-    align-items: center;
+  margin-top: 20px;
+  text-align: center;
+  color: #adaeb0;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px; 
 }
 
-.login-botao a {
-    color: #adaeb0;
-    font-weight: 700;
-    text-decoration: none;
+.botao-login a {
+  color: #0049da;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.login-botao a:hover {
-    color: #feb7d9;
-    transition: ease 1s;
+.botao-login a:hover {
+  color: #feb7d9;
+  cursor: pointer;
 }
 </style>
