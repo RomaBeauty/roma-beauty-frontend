@@ -96,9 +96,9 @@ body {
 
 /* Container principal */
 .cadastro {
-    width: 60vh;
+    width: 70vh;
     max-width: 600px;
-    height: auto;
+    height: 94%;
     backdrop-filter: blur(25px);
     border: 2px solid #fff;
     border-radius: 15px;
@@ -123,7 +123,7 @@ body {
     padding-inline: 20px 50px;
     border-radius: 30px;
     outline: none;
-    border: 1px solid #fff;
+    border: 2px solid #fff;
     color: #fff;
 }
 
@@ -133,7 +133,7 @@ body {
     top: -10px;
     left: 20px;
     font-size: 14px;
-    background-color: #e9e7e9;
+    background-color: #ffffff;
     border-radius: 30px;
     color: #000;
     padding: 0 10px;
@@ -186,7 +186,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
-    margin-left: 10vh;
+    margin-left: 15vh;
 }
 
 .botao-acesso:hover {

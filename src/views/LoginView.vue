@@ -122,7 +122,7 @@ body {
   padding-inline: 20px 50px;
   border-radius: 30px;
   outline: none;
-  border: 1px solid #fff;
+  border: 2px solid #fff;
   color: #fff;
 }
 
@@ -132,7 +132,7 @@ body {
   top: -10px;
   left: 20px;
   font-size: 14px;
-  background-color: #e9e7e9;
+  background-color: #ffffff;
   border-radius: 30px;
   color: #000;
   padding: 0 10px;
