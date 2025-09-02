@@ -48,7 +48,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+
+const first_name = ref('')
+const last_name = ref('')
+
+const user = reactive({
+    name: '',
+    email: '',
+    password: '',
+    telefone: '',
+    
+});
 
 const nome = ref('')
 const sobrenome = ref('')
