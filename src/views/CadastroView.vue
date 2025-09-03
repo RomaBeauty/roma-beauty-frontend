@@ -5,25 +5,25 @@
             <div class="infos-cadastro">
 
                 <div class="input-box">
-                    <input v-model="nome" type="text" id="nome" class="input-cadastro" required />
+                    <input v-model="first_name" type="text" id="nome" class="input-cadastro" required />
                     <label for="nome" class="label">Nome</label>
                     <div class="icon"><i class="fa-solid fa-user"></i></div>
                 </div>
 
                 <div class="input-box">
-                    <input v-model="sobrenome" type="text" id="sobrenome" class="input-cadastro" required />
+                    <input v-model="last_name" type="text" id="sobrenome" class="input-cadastro" required />
                     <label for="sobrenome" class="label">Sobrenome</label>
                     <div class="icon"><i class="fa-solid fa-user"></i></div>
                 </div>
 
                 <div class="input-box">
-                    <input v-model="email" type="email" id="email" class="input-cadastro" required />
+                    <input v-model="user.email" type="email" id="email" class="input-cadastro" required />
                     <label for="email" class="label">E-mail</label>
                     <div class="icon"><i class="fa-solid fa-envelope"></i></div>
                 </div>
 
                 <div class="input-box">
-                    <input v-model="senha" type="password" id="senha" class="input-cadastro" required />
+                    <input v-model="user.password" type="password" id="senha" class="input-cadastro" required />
                     <label for="senha" class="label">Senha</label>
                     <div class="icon"><i class="fa-solid fa-lock"></i></div>
                 </div>
@@ -36,12 +36,12 @@
                 </div>
 
                 <div class="input-box">
-                    <input v-model="telefone" type="tel" id="telefone" class="input-cadastro" required />
+                    <input v-model="user.telefone" type="tel" id="telefone" class="input-cadastro" required />
                     <label for="telefone" class="label">Telefone</label>
                     <div class="icon"><i class="fa-solid fa-phone"></i></div>
                 </div>
 
-                <button class="botao-acesso" @click="acessar">Acessar</button>
+                <button class="botao-acesso" @click="validarCadastro">Acessar</button>
             </div>
         </div>
     </div>
@@ -49,34 +49,30 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { useAutenticacaoStore } from '@/stores/autenticacao';
+import { useToastStore } from '@/stores/toast';
 
-const first_name = ref('')
-const last_name = ref('')
+const first_name = ref('');
+const last_name = ref('');
+const confirmarSenha = ref('');
+const autenticacaoStore = useAutenticacaoStore();
+const toastStore = useToastStore();
 
 const user = reactive({
     name: '',
     email: '',
     password: '',
     telefone: '',
-    
 });
 
-const nome = ref('')
-const sobrenome = ref('')
-const email = ref('')
-const senha = ref('')
-const confirmarSenha = ref('')
-const telefone = ref('')
-
-function acessar() {
-    console.log({
-        nome: nome.value,
-        sobrenome: sobrenome.value,
-        email: email.value,
-        senha: senha.value,
-        confirmarSenha: confirmarSenha.value,
-        telefone: telefone.value
-    })
+function validarCadastro() {
+    if (user.password == confirmarSenha.value) {
+        user.name = first_name.value + " " + last_name.value;
+        autenticacaoStore.cadastro(user);
+    }
+    else {
+        toastStore.notify("As senhas não coincidem!", "error");
+    }
 }
 </script>
 
