@@ -5,25 +5,25 @@
             <div class="infos-cadastro">
 
                 <div class="input-box">
-                    <input v-model="nome" type="text" id="nome" class="input-cadastro" required />
+                    <input v-model="first_name" type="text" id="nome" class="input-cadastro" required />
                     <label for="nome" class="label">Nome</label>
                     <div class="icon"><i class="fa-solid fa-user"></i></div>
                 </div>
 
                 <div class="input-box">
-                    <input v-model="sobrenome" type="text" id="sobrenome" class="input-cadastro" required />
+                    <input v-model="last_name" type="text" id="sobrenome" class="input-cadastro" required />
                     <label for="sobrenome" class="label">Sobrenome</label>
                     <div class="icon"><i class="fa-solid fa-user"></i></div>
                 </div>
 
                 <div class="input-box">
-                    <input v-model="email" type="email" id="email" class="input-cadastro" required />
+                    <input v-model="user.email" type="email" id="email" class="input-cadastro" required />
                     <label for="email" class="label">E-mail</label>
                     <div class="icon"><i class="fa-solid fa-envelope"></i></div>
                 </div>
 
                 <div class="input-box">
-                    <input v-model="senha" type="password" id="senha" class="input-cadastro" required />
+                    <input v-model="user.password" type="password" id="senha" class="input-cadastro" required />
                     <label for="senha" class="label">Senha</label>
                     <div class="icon"><i class="fa-solid fa-lock"></i></div>
                 </div>
@@ -36,36 +36,43 @@
                 </div>
 
                 <div class="input-box">
-                    <input v-model="telefone" type="tel" id="telefone" class="input-cadastro" required />
+                    <input v-model="user.telefone" type="tel" id="telefone" class="input-cadastro" required />
                     <label for="telefone" class="label">Telefone</label>
                     <div class="icon"><i class="fa-solid fa-phone"></i></div>
                 </div>
 
-                <button class="botao-acesso" @click="acessar">Acessar</button>
+                <button class="botao-acesso" @click="validarCadastro">Acessar</button>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import { useAutenticacaoStore } from '@/stores/autenticacao';
+import { useToastStore } from '@/stores/toast';
 
-const nome = ref('')
-const sobrenome = ref('')
-const email = ref('')
-const senha = ref('')
-const confirmarSenha = ref('')
-const telefone = ref('')
+const first_name = ref('');
+const last_name = ref('');
+const confirmarSenha = ref('');
+const autenticacaoStore = useAutenticacaoStore();
+const toastStore = useToastStore();
 
-function acessar() {
-    console.log({
-        nome: nome.value,
-        sobrenome: sobrenome.value,
-        email: email.value,
-        senha: senha.value,
-        confirmarSenha: confirmarSenha.value,
-        telefone: telefone.value
-    })
+const user = reactive({
+    name: '',
+    email: '',
+    password: '',
+    telefone: '',
+});
+
+function validarCadastro() {
+    if (user.password == confirmarSenha.value) {
+        user.name = first_name.value + " " + last_name.value;
+        autenticacaoStore.cadastro(user);
+    }
+    else {
+        toastStore.notify("As senhas não coincidem!", "error");
+    }
 }
 </script>
 
@@ -96,9 +103,9 @@ body {
 
 /* Container principal */
 .cadastro {
-    width: 60vh;
+    width: 70vh;
     max-width: 600px;
-    height: auto;
+    height: 94%;
     backdrop-filter: blur(25px);
     border: 2px solid #fff;
     border-radius: 15px;
@@ -123,7 +130,7 @@ body {
     padding-inline: 20px 50px;
     border-radius: 30px;
     outline: none;
-    border: 1px solid #fff;
+    border: 2px solid #fff;
     color: #fff;
 }
 
@@ -133,7 +140,7 @@ body {
     top: -10px;
     left: 20px;
     font-size: 14px;
-    background-color: #e9e7e9;
+    background-color: #ffffff;
     border-radius: 30px;
     color: #000;
     padding: 0 10px;
@@ -186,7 +193,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
-    margin-left: 10vh;
+    margin-left: 15vh;
 }
 
 .botao-acesso:hover {

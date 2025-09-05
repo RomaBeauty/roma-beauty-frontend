@@ -5,31 +5,15 @@
 
       <div class="infos-cadastro">
         <div class="input-box">
-          <input type="text" v-model="nome" id="nome" class="input-cadastro" required />
-          <label for="nome" class="label">Nome</label>
+          <input type="text" v-model="user.email" id="email" class="input-cadastro" required />
+          <label for="email" class="label">Email</label>
           <div class="icon">
             <i class="fa-solid fa-user"></i>
           </div>
         </div>
 
         <div class="input-box">
-          <input type="text" v-model="sobrenome" id="sobrenome" class="input-cadastro" required />
-          <label for="sobrenome" class="label">Sobrenome</label>
-          <div class="icon">
-            <i class="fa-solid fa-user"></i>
-          </div>
-        </div>
-
-        <div class="input-box">
-          <input type="email" v-model="email" id="email" class="input-cadastro" required />
-          <label for="email" class="label">E-mail</label>
-          <div class="icon">
-            <i class="fa-solid fa-envelope"></i>
-          </div>
-        </div>
-
-        <div class="input-box">
-          <input type="password" v-model="senha" id="senha" class="input-cadastro" required />
+          <input type="password" v-model="user.password" id="senha" class="input-cadastro" required />
           <label for="senha" class="label">Senha</label>
           <div class="icon">
             <i class="fa-solid fa-lock"></i>
@@ -37,7 +21,7 @@
         </div>
       </div>
 
-      <button class="botao-acesso" @click="handleLogin">Acessar</button>
+      <button class="botao-acesso" @click="autenticacaoStore.login(user)">Acessar</button>
 
       <div class="botao-login">
         Ainda não tem uma conta?
@@ -49,21 +33,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { useAutenticacaoStore } from '@/stores/autenticacao'
+import { ref, reactive } from 'vue'
 
-const nome = ref('')
-const sobrenome = ref('')
-const email = ref('')
-const senha = ref('')
+const autenticacaoStore = useAutenticacaoStore();
 
-function handleLogin() {
-  console.log({
-    nome: nome.value,
-    sobrenome: sobrenome.value,
-    email: email.value,
-    senha: senha.value
-  })
-}
+const user = reactive({
+  email: '',
+  password: ''
+});
 </script>
 
 <style scoped>
@@ -122,7 +100,7 @@ body {
   padding-inline: 20px 50px;
   border-radius: 30px;
   outline: none;
-  border: 1px solid #fff;
+  border: 2px solid #fff;
   color: #fff;
 }
 
@@ -132,7 +110,7 @@ body {
   top: -10px;
   left: 20px;
   font-size: 14px;
-  background-color: #e9e7e9;
+  background-color: #ffffff;
   border-radius: 30px;
   color: #000;
   padding: 0 10px;
