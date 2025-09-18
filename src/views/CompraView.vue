@@ -1,14 +1,45 @@
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 
 // Campos do formulário
 const nome = ref('')
 const sobrenome = ref('')
 const email = ref('')
 const telefone = ref('')
+const cep = ref('')
+const rua = ref('')
+const bairro = ref('')
 const cidade = ref('')
 const estado = ref('')
-const cep = ref('')
+const numero = ref('')
+const complemento = ref('')
+
+// Função para buscar CEP
+const buscarCep = async () => {
+  const cepLimpo = cep.value.replace(/\D/g, '')
+
+  if (cepLimpo.length !== 8) return
+
+  try {
+    const response = await axios.get(`https://viacep.com.br/ws/${cepLimpo}/json/`)
+
+    if (response.data.erro) {
+      rua.value = ''
+      bairro.value = ''
+      cidade.value = ''
+      estado.value = ''
+      alert('CEP não encontrado.')
+    } else {
+      rua.value = response.data.logradouro
+      bairro.value = response.data.bairro
+      cidade.value = response.data.localidade
+      estado.value = response.data.uf
+    }
+  } catch (error) {
+    console.error('Erro ao buscar CEP:', error)
+  }
+}
 
 // Função para enviar
 const enviarFormulario = () => {
@@ -17,9 +48,13 @@ const enviarFormulario = () => {
     sobrenome: sobrenome.value,
     email: email.value,
     telefone: telefone.value,
+    cep: cep.value,
+    rua: rua.value,
+    numero: numero.value,
+    bairro: bairro.value,
+    complemento: complemento.value,
     cidade: cidade.value,
-    estado: estado.value,
-    cep: cep.value
+    estado: estado.value
   })
 
   // Limpar formulário
@@ -27,9 +62,13 @@ const enviarFormulario = () => {
   sobrenome.value = ''
   email.value = ''
   telefone.value = ''
+  cep.value = ''
+  rua.value = ''
+  numero.value = ''
+  bairro.value = ''
+  complemento.value = ''
   cidade.value = ''
   estado.value = ''
-  cep.value = ''
 }
 </script>
 
@@ -37,17 +76,12 @@ const enviarFormulario = () => {
   <div class="container">
     <div class="lado1">
       <div class="logo">
-        <img src="../public/imagem/logo.png" alt="">
+        <img src="/public/imagem/logo.png" alt="">
       </div>
       <div class="historico">
         <p>Sacola ></p>
         <p class="info">Informações </p>
         <p>> Pagamento</p>
-      </div>
-      <div class="pagamento">
-        <div class="pag1"><i class="fa-solid fa-sheet-plastic"></i> Boleto</div>
-        <div class="pag2"><i class="fa-brands fa-pix"></i> Pix</div>
-        <div class="pag3"><i class="fa-solid fa-credit-card"></i> Cartão</div>
       </div>
 
       <div class="lado1">
@@ -70,23 +104,54 @@ const enviarFormulario = () => {
               </div>
             </div>
 
-            <!-- Linha 3: Telefone, Cidade e Estado -->
+            <!-- Linha 3: Telefone -->
             <div class="linha">
-              <div class="campo">
+              <div class="campo unico">
                 <input id="telefone" type="tel" v-model="telefone" placeholder="Telefone" required />
-              </div>
-              <div class="campo">
-                <input id="cidade" type="text" v-model="cidade" placeholder="Cidade" required />
-              </div>
-              <div class="campo">
-                <input id="estado" type="text" v-model="estado" placeholder="Estado" required />
               </div>
             </div>
 
             <!-- Linha 4: CEP -->
             <div class="linha">
               <div class="campo unico">
-                <input id="cep" type="number" v-model="cep" placeholder="CEP" required />
+                <input 
+                  id="cep" 
+                  type="text" 
+                  v-model="cep" 
+                  placeholder="CEP" 
+                  @blur="buscarCep" 
+                  required 
+                />
+              </div>
+            </div>
+
+            <!-- Linha 5: Rua e Número -->
+            <div class="linha">
+              <div class="campo">
+                <input id="rua" type="text" v-model="rua" placeholder="Rua" readonly />
+              </div>
+              <div class="campo">
+                <input id="numero" type="text" v-model="numero" placeholder="Número" required />
+              </div>
+            </div>
+
+            <!-- Linha 6: Bairro e Complemento -->
+            <div class="linha">
+              <div class="campo">
+                <input id="bairro" type="text" v-model="bairro" placeholder="Bairro" readonly />
+              </div>
+              <div class="campo">
+                <input id="complemento" type="text" v-model="complemento" placeholder="Complemento (opcional)" />
+              </div>
+            </div>
+
+            <!-- Linha 7: Cidade e Estado -->
+            <div class="linha">
+              <div class="campo">
+                <input id="cidade" type="text" v-model="cidade" placeholder="Cidade" readonly />
+              </div>
+              <div class="campo">
+                <input id="estado" type="text" v-model="estado" placeholder="Estado" readonly />
               </div>
             </div>
 
@@ -100,20 +165,17 @@ const enviarFormulario = () => {
       <!-- Produto principal -->
       <div class="produto-principal">
         <div class="imagem-produto">
-          <img src="../public/cabelo/valentine-cabelo2.png" alt="Produto">
+          <img src="/public/cabelo/valentine-cabelo2.png" alt="Produto">
           <div class="quantidade">1</div>
         </div>
         <div class="info-produto">
-          <p class="nome-produto">Máscara Super Inteligente 500g</p>
+          <p class="nome-produto">Máscara Valentine 500g</p>
           <p class="valor-produto">R$ 120,00</p>
         </div>
       </div>
 
       <!-- Código de desconto -->
-      <div class="desconto">
-        <input type="text" placeholder="Código de desconto">
-        <button>Aplicar</button>
-      </div>
+     
 
       <!-- Resumo do pedido -->
       <div class="resumo">
@@ -136,22 +198,22 @@ const enviarFormulario = () => {
         <h3>Outros produtos</h3>
         <div class="cards-produtos">
           <div class="card-produto">
-            <img src="../public/cabelo/valentine-cabelo3.png" alt="">
+            <img src="/public/cabelo/valentine-cabelo3.png" alt="">
             <div class="adicional">
               <h1>Óleo</h1>
               <p>R$ 50,00</p>
             </div>
             <button class="adicionar">Adicionar</button>
           </div>
-         
-<div class="card-produto">
-  <img src="../public/cabelo/valentine-cabelo.png" alt="">
-  <div class="adicional">
-    <h1>Shampoo</h1>
-    <p>R$ 80,00</p>
-  </div>
-  <button class="adicionar">Adicionar</button>
-</div>
+
+          <div class="card-produto">
+            <img src="/public/cabelo/valentine-cabelo.png" alt="">
+            <div class="adicional">
+              <h1>Shampoo</h1>
+              <p>R$ 80,00</p>
+            </div>
+            <button class="adicionar">Adicionar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -161,6 +223,7 @@ const enviarFormulario = () => {
     integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 </template>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
@@ -172,6 +235,10 @@ const enviarFormulario = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: 100%;
+  margin-top: -10px;
+  margin-right: -7px;
+  margin-bottom: 40px;
 }
 
 /* Produto principal */
