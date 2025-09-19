@@ -70,42 +70,90 @@ function doSearch() {
                 <div class="side-menu" :class="{ show: menuAberto }">
                     <button @click="toggleMenu"><i class="fa-solid fa-xmark"></i></button>
 
-                    <h3>Categorias</h3>
-                    <ul>
-                        <li @click="selecionarOpcao('perfume')">Perfume</li>
-                        <li @click="selecionarOpcao('creme')">Creme</li>
-                        <li @click="selecionarOpcao('desodorante')">Desodorante</li>
-                    </ul>
+                    <div class="menu-content">
+                        <!-- Coluna de categorias -->
+                        <div class="categorias">
+                            <h3>Categorias</h3>
+                            <ul>
+                                <li @click="selecionarOpcao('maquiagem')">Maquiagem</li>
+                                <li @click="selecionarOpcao('skincare')">Skin Care</li>
+                                <li @click="selecionarOpcao('corporal')">Corporal</li>
+                                <li @click="selecionarOpcao('cabelo')">Cabelo</li>
+                                <li @click="selecionarOpcao('perfume')">Perfume</li>
+                                <li> <router-link to="/">Home</router-link></li>
 
-                    <!-- Submenus -->
-                    <div v-if="opcaoSelecionada === 'perfume'" class="submenu-lateral">
-                        <ul>
-                            <li><router-link to="/cards">Body Splash</router-link></li>
-                            <li>Colônia</li>
-                            <li>Maria</li>
-                        </ul>
-                    </div>
+                            </ul>
+                        </div>
 
-                    <div v-if="opcaoSelecionada === 'creme'" class="submenu-lateral">
-                        <ul>
-                            <li>Hidratante</li>
-                            <li>Nutritivo</li>
-                            <li>Anticelulite</li>
-                        </ul>
-                    </div>
+                        <!-- Coluna de submenus -->
+                        <!-- Coluna de submenus -->
+                        <div class="subcategorias">
+                            <transition name="fade-slide" mode="out-in">
+                                <div v-if="opcaoSelecionada === 'perfume'" key="perfume">
+                                    <ul>
+                                        <li><router-link to="">Perfume</router-link></li>
+                                        <li><router-link to="">Colônia</router-link></li>                                        
+                                        <li><router-link to="">Body Splash</router-link></li>
 
-                    <div v-if="opcaoSelecionada === 'desodorante'" class="submenu-lateral">
-                        <ul>
-                            <li>Aerosol</li>
-                            <li>Bastão</li>
-                            <li>Maria</li>
-                        </ul>
+                                    </ul>
+                                </div>
+
+                                <div v-else-if="opcaoSelecionada === 'corporal'" key="corporal">
+                                    <ul>
+                                        <li><router-link to="">Óleo</router-link></li>                                        
+                                        <li><router-link to="">Creme</router-link></li>
+                                        <li><router-link to="">Esfoliante</router-link></li>
+                                        <li><router-link to="">hidratante</router-link></li>
+
+                                    </ul>
+                                </div>
+
+                                   <div v-else-if="opcaoSelecionada === 'skincare'" key="skincare">
+                                    <ul>                                        
+                                        <li><router-link to="">Serum</router-link></li>
+                                        <li><router-link to="">Sabonete</router-link></li>
+                                        <li><router-link to="">Protetor Solar</router-link></li>
+
+                                    </ul>
+                                </div>
+
+                                   <div v-else-if="opcaoSelecionada === 'cabelo'" key="cabelo">
+                                    <ul>
+                                        <li><router-link to="">óleo</router-link></li>                                          
+                                        <li><router-link to="">Máscara</router-link></li>                                        
+                                        <li><router-link to="">Shampoo</router-link></li>                                               
+                                        <li><router-link to="">Condicionador</router-link></li>
+                                        <li><router-link to="">Proteto térmico</router-link></li>
+
+                                    </ul>
+                                </div>
+
+                                <div v-else-if="opcaoSelecionada === 'maquiagem'" key="maquiagem">
+                                    <ul>
+                                        <li><router-link to="/cards">Pó</router-link></li>                                        
+                                        <li><router-link to="">Base</router-link></li>                                       
+                                        <li><router-link to="">Rímel</router-link></li>
+                                        <li><router-link to="">Corretivo</router-link></li>
+                                        <li><router-link to="">Iluminador</router-link></li>
+                                        <li><router-link to="">Batom matte</router-link></li>
+                                        <li><router-link to="">Batom Líquido</router-link></li>
+                                        <li><router-link to="">Paleta de Sombra</router-link></li>
+                                        <li><router-link to="">Paleta de sobrancelha</router-link></li>
+
+
+
+                                    </ul>
+                                </div>
+                            </transition>
+                        </div>
+
                     </div>
                 </div>
+
             </div>
 
             <div class="nome-logo">
-                <h2>ROMA</h2>
+                <img src="/public/imagem/logo.png" alt="">
             </div>
 
             <div class="icons-menu">
@@ -155,7 +203,7 @@ function doSearch() {
             </div>
         </div>
 
-        <div class="imagem-principal"></div>
+        <div class="imagem-principal"> <img src="/public/imagem/imagem-principal.png" alt=""></div>
     </div>
 
     <div class="anuncio1">
@@ -182,6 +230,58 @@ function doSearch() {
             <div class="filtro"><i class="fa-solid fa-baby-carriage"></i> Infantil</div>
         </div>
     </div>
+
+    <footer class="my-footer">
+        <div class="my-container">
+            <div class="my-row">
+                <!-- Coluna 1 -->
+                <div class="my-footer-col">
+                    <h4>Sobre a Roma Beauty</h4>
+                    <ul>
+                        <li><router-link to="#">Nossa história</router-link></li>
+                        <li><router-link to="#">Missão e valores</router-link></li>
+                        <li><router-link to="#">Política de privacidade</router-link></li>
+                        <li><router-link to="#">Afiliados</router-link></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 2 -->
+                <div class="my-footer-col">
+                    <h4>Ajuda</h4>
+                    <ul>
+                        <li><router-link to="#">FAQ</router-link></li>
+                        <li><router-link to="#">Envio</router-link></li>
+                        <li><router-link to="#">Devoluções</router-link></li>
+                        <li><router-link to="#">Status do pedido</router-link></li>
+                        <li><router-link to="#">Formas de pagamento</router-link></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3 -->
+                <div class="my-footer-col">
+                    <h4>Produtos</h4>
+                    <ul>
+                        <li><router-link to="#">Perfumes</router-link></li>
+                        <li><router-link to="#">Cremes</router-link></li>
+                        <li><router-link to="#">Body Splash</router-link></li>
+                        <li><router-link to="#">Desodorantes</router-link></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 4 -->
+                <div class="my-footer-col">
+                    <h4>Siga-nos</h4>
+                    <div class="my-social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -190,7 +290,129 @@ function doSearch() {
 
 
 <style scoped>
+/*footer*/
+.my-footer {
+    background-color: #343535;
+    padding: 70px 0;
+    margin-top: 150px;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 30px;
+}
+
+.my-container {
+    width: 1170px;
+    margin: auto;
+}
+
+.my-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.my-footer-col {
+    width: 20%;
+    padding: 0 15px;
+}
+
+.my-footer-col h4 {
+    font-size: 18px;
+    color: #ffffff;
+    text-transform: capitalize;
+    margin-bottom: 35px;
+    font-weight: 500;
+    position: relative;
+}
+
+.my-footer-col h4::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    background-color: #feb7d9;
+    height: 2px;
+    width: 50px;
+}
+
+.my-footer-col ul li:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.my-footer-col ul li a {
+    font-size: 16px;
+    text-transform: capitalize;
+    color: #bbbbbb;
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.my-footer-col ul li a:hover {
+    color: #ffffff;
+    padding-left: 8px;
+}
+
+.my-social-links a {
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 0 10px 10px 0;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    color: #ffffff;
+    transition: all 0.5s ease;
+}
+
+.my-social-links a:hover {
+    color: #24262b;
+    background-color: #ffffff;
+}
+
+/* Responsivo */
+@media(max-width: 767px) {
+    .my-footer-col {
+        width: 50%;
+        margin-bottom: 30px;
+    }
+}
+
+@media(max-width: 574px) {
+    .my-footer-col {
+        width: 100%;
+    }
+}
+
+/*footer*/
+
+.imagem-principal img {
+    width: 100%;
+    border-radius: 30px;
+    height: 95%;
+    margin-top: 10px;
+}
+
+
 /* Lateral Menu */
+
+.menu-content {
+    display: flex;
+    gap: 30px;
+    height: 100%;
+}
+
+.categorias {
+    width: 40%;
+    border-right: 2px solid #d2d0cc;
+    margin-left: 50px;
+}
+
+.subcategorias {
+    width: 60%;
+    padding-left: 20px;
+    margin-top: 100px;
+}
+
 .side-menu {
     background-color: #fff;
     width: 50%;
@@ -214,6 +436,7 @@ function doSearch() {
 .side-menu h3 {
     font-family: 'Poppins', sans-serif;
     margin-bottom: 15px;
+    font-size: 2rem;
     color: #84827e;
 }
 
@@ -225,16 +448,68 @@ function doSearch() {
 
 .side-menu li {
     padding: 10px 0;
+    font-size: 1.2rem;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+}
+
+.subcategorias a {
+    text-decoration: none;
+    color: inherit;
+    /* usa a mesma cor do texto normal */
+    font-family: 'Poppins', sans-serif;
+    padding: 10px 0;
+}
+
+.categorias a {
+    text-decoration: none;
+    color: #333;
+    cursor: default;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.categorias a:hover {
+    color: #a1a3a4;
+    font-weight: bold;
+    transition: ease 0.5s;
+
 }
 
 .side-menu li:hover {
-    color: #feb7d9;
+    color: #a1a3a4;
     font-weight: bold;
+    transition: ease 0.5s;
 }
 
 /* Submenu dentro do menu lateral */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+    transition: all 0.3s ease;
+}
+
+.fade-slide-enter-from {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.fade-slide-enter-to {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.fade-slide-leave-from {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.fade-slide-leave-to {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+
 .submenu-lateral {
     margin-top: 15px;
     padding-left: 15px;
@@ -244,11 +519,10 @@ function doSearch() {
 
 /*pesquisa*/
 .search-container {
-    display: flex;
     align-items: center;
     gap: 8px;
     margin: 20px auto;
-    width: 200vh;
+    width: 90vh;
     margin-left: 40px;
 }
 
@@ -259,10 +533,12 @@ function doSearch() {
     margin-left: 60px;
 }
 
+
 .search-input {
-    flex: 1;
     padding: 10px 14px;
     height: 30px;
+    width: 100%;
+    margin-top: 40px;
     font-size: 1.2rem;
     border-radius: 20px;
     border: none;
@@ -288,15 +564,7 @@ function doSearch() {
 
 /*Usuario*/
 
-.imagem-user {
-    background-color: #84827e;
-    z-index: 1;
-    width: 150vh;
-    border-top-left-radius: 20px;
-    height: 20%;
-    margin-left: -40px;
-    margin-top: -60px;
-}
+
 
 .perfil-container input {
     font-family: 'Poppins', sans-serif;
@@ -316,8 +584,7 @@ function doSearch() {
     height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    margin-top: -100px;
-    margin-bottom: 10px;
+    margin-top: 20px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
     z-index: 2;
 }
@@ -370,7 +637,7 @@ function doSearch() {
     border: none;
     background-color: transparent;
     font-size: 2rem;
-    margin-left: 100vh;
+    margin-left: 89vh;
 }
 
 .overlay button:hover {
@@ -486,7 +753,7 @@ function doSearch() {
     width: 190vh;
     height: 250px;
     background-color: #000;
-    margin-left: 90px;
+    margin-left: 62px;
     margin-top: 40px;
     border-radius: 20px;
     border-top: 1px solid transparent;
@@ -503,7 +770,7 @@ function doSearch() {
 
 .anuncio1 h1 {
     color: #ffffff;
-    margin-top: 40px;
+    margin-top: 10px;
     font-size: 2.5rem;
 }
 
@@ -519,9 +786,9 @@ function doSearch() {
 }
 
 .botao-anuncio1:hover {
-    background-color: #84827e;
+    background-color: #9c9d9d;
     transition: ease .5s;
-    color: #000000;
+    color: #ffffff;
 }
 
 .anuncios-container {
@@ -587,7 +854,7 @@ function doSearch() {
     top: 0;
     width: 92%;
     border-radius: 20px;
-    max-width: 1530px;
+    max-width: 1535px;
     margin-top: 10px;
     height: 70px;
     display: flex;
@@ -617,6 +884,11 @@ function doSearch() {
     margin: 0 10px;
 }
 
+.menu-container i:hover {
+    color: #858687;
+    transition: ease .5s;
+}
+
 .menu-container h2 {
     font-family: "Playfair Display", serif;
     font-size: 2rem;
@@ -630,6 +902,11 @@ function doSearch() {
     justify-content: center;
     flex: 1;
     text-align: center;
+}
+
+.nome-logo img {
+    width: 140px;
+    height: 80px;
 }
 
 /* INÍCIO */
