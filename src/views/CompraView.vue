@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import axios from 'axios'
 
+// URL da API (ideal deixar no .env: VITE_API_URL=http://localhost:8000/api)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+
 // Campos do formulário
 const nome = ref('')
 const sobrenome = ref('')
@@ -15,15 +18,17 @@ const estado = ref('')
 const numero = ref('')
 const complemento = ref('')
 
+// Feedback para o usuário
+const mensagem = ref('')
+const erro = ref('')
+
 // Função para buscar CEP
 const buscarCep = async () => {
   const cepLimpo = cep.value.replace(/\D/g, '')
-
   if (cepLimpo.length !== 8) return
 
   try {
     const response = await axios.get(`https://viacep.com.br/ws/${cepLimpo}/json/`)
-
     if (response.data.erro) {
       rua.value = ''
       bairro.value = ''
@@ -41,34 +46,45 @@ const buscarCep = async () => {
   }
 }
 
-// Função para enviar
-const enviarFormulario = () => {
-  console.log({
-    nome: nome.value,
-    sobrenome: sobrenome.value,
-    email: email.value,
-    telefone: telefone.value,
-    cep: cep.value,
-    rua: rua.value,
-    numero: numero.value,
-    bairro: bairro.value,
-    complemento: complemento.value,
-    cidade: cidade.value,
-    estado: estado.value
-  })
+// Função para enviar pro backend
+const enviarFormulario = async () => {
+  try {
+    const payload = {
+      nome: nome.value,
+      sobrenome: sobrenome.value,
+      email: email.value,
+      telefone: telefone.value,
+      cep: cep.value,
+      rua: rua.value,
+      numero: numero.value,
+      bairro: bairro.value,
+      complemento: complemento.value,
+      cidade: cidade.value,
+      estado: estado.value
+    }
 
-  // Limpar formulário
-  nome.value = ''
-  sobrenome.value = ''
-  email.value = ''
-  telefone.value = ''
-  cep.value = ''
-  rua.value = ''
-  numero.value = ''
-  bairro.value = ''
-  complemento.value = ''
-  cidade.value = ''
-  estado.value = ''
+    const response = await axios.post(`${API_URL}/purchases/`, payload)
+
+    mensagem.value = response.data.message || 'Compra realizada com sucesso!'
+    erro.value = ''
+
+    // Limpar formulário
+    nome.value = ''
+    sobrenome.value = ''
+    email.value = ''
+    telefone.value = ''
+    cep.value = ''
+    rua.value = ''
+    numero.value = ''
+    bairro.value = ''
+    complemento.value = ''
+    cidade.value = ''
+    estado.value = ''
+  } catch (e) {
+    erro.value = e.response?.data?.detail || 'Erro ao enviar compra.'
+    mensagem.value = ''
+    console.error('Erro ao enviar formulário:', e)
+  }
 }
 </script>
 
@@ -86,7 +102,7 @@ const enviarFormulario = () => {
 
       <div class="lado1">
         <div class="formulario">
-          <form @submit.prevent="enviarFormulario">
+          < <form @submit.prevent="enviarFormulario">
             <!-- Linha 1: Nome e Sobrenome -->
             <div class="linha">
               <div class="campo">
@@ -111,19 +127,16 @@ const enviarFormulario = () => {
               </div>
             </div>
 
-            <!-- Linha 4: CEP -->
+            <!-- Linha 4: CEP + botão -->
             <div class="linha">
-              <div class="campo unico">
-                <input 
-                  id="cep" 
-                  type="text" 
-                  v-model="cep" 
-                  placeholder="CEP" 
-                  @blur="buscarCep" 
-                  required 
-                />
+              <div class="campo cep-container">
+                <input id="cep" type="text" v-model="cep" placeholder="CEP" required />
+                <button type="button" class="buscar-cep" @click="buscarCep">
+                  Buscar
+                </button>
               </div>
             </div>
+
 
             <!-- Linha 5: Rua e Número -->
             <div class="linha">
@@ -156,11 +169,16 @@ const enviarFormulario = () => {
             </div>
 
             <button type="submit">Enviar</button>
-          </form>
+            </form>
+
+            <!-- Mensagens de feedback -->
+            <p v-if="mensagem" style="color: green; margin-top: 10px;">{{ mensagem }}</p>
+            <p v-if="erro" style="color: red; margin-top: 10px;">{{ erro }}</p>
         </div>
       </div>
     </div>
 
+    <!-- lado2 (resumo da compra, produtos etc) permanece igual -->
     <div class="lado2">
       <!-- Produto principal -->
       <div class="produto-principal">
@@ -169,13 +187,10 @@ const enviarFormulario = () => {
           <div class="quantidade">1</div>
         </div>
         <div class="info-produto">
-          <p class="nome-produto">Máscara Valentine 500g</p>
+          <p class="nome-produto">Máscara Super Inteligente 500g</p>
           <p class="valor-produto">R$ 120,00</p>
         </div>
       </div>
-
-      <!-- Código de desconto -->
-     
 
       <!-- Resumo do pedido -->
       <div class="resumo">
@@ -218,11 +233,8 @@ const enviarFormulario = () => {
       </div>
     </div>
   </div>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
-    integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </template>
+
 
 
 <style scoped>
@@ -257,13 +269,15 @@ const enviarFormulario = () => {
 
 .card-produto {
   display: flex;
-  justify-content: space-between; /* separa os lados */
+  justify-content: space-between;
+  /* separa os lados */
   align-items: center;
   background-color: #fff;
   padding: 10px;
   border-radius: 10px;
   height: 70px;
 }
+
 .imagem-produto img {
   width: 100%;
   height: 100%;
@@ -391,6 +405,27 @@ const enviarFormulario = () => {
 }
 
 
+.cep-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.buscar-cep {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.buscar-cep:hover {
+  background-color: #555;
+}
 
 
 
