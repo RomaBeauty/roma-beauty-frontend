@@ -202,7 +202,7 @@ function doSearch() {
 
             </div>
         </div>
-
+        <br></br>
         <div class="imagem-principal"> <img src="/public/imagem/imagem-principal.png" alt=""></div>
     </div>
 
@@ -223,9 +223,9 @@ function doSearch() {
     <div class="filtragem">
         <h1>Explore o melhor de corpo e banho</h1>
         <div class="filtros">
-            <div class="filtro"><i class="fa-solid fa-prescription-bottle"></i> Desodorante</div>
+            <div class="filtro"><i class="fa-solid fa-prescription-bottle"></i> Esfoliante </div>
             <div class="filtro"><i class="fa-solid fa-spray-can-sparkles"></i> Body Splash</div>
-            <div class="filtro"><i class="fa-solid fa-soap"></i> Sabonete</div>
+            <div class="filtro"><i class="fa-solid fa-soap"></i> Creme</div>
             <div class="filtro"><i class="fa-solid fa-pump-soap"></i> Hidratante</div>
             <div class="filtro"><i class="fa-solid fa-baby-carriage"></i> Infantil</div>
         </div>
@@ -261,10 +261,9 @@ function doSearch() {
                 <div class="my-footer-col">
                     <h4>Produtos</h4>
                     <ul>
-                        <li><router-link to="#">Perfumes</router-link></li>
-                        <li><router-link to="#">Cremes</router-link></li>
-                        <li><router-link to="#">Body Splash</router-link></li>
-                        <li><router-link to="#">Desodorantes</router-link></li>
+                        <li><router-link to="#">Cabelo</router-link></li>
+                        <li><router-link to="#">Maquiagem</router-link></li>
+                        <li><router-link to="#">skincare</router-link></li>
                     </ul>
                 </div>
 
@@ -292,7 +291,7 @@ function doSearch() {
 <style scoped>
 /*footer*/
 .my-footer {
-    background-color: #343535;
+    background-color: #202020;
     padding: 70px 0;
     margin-top: 150px;
     font-family: 'Poppins', sans-serif;
@@ -328,7 +327,7 @@ function doSearch() {
     position: absolute;
     left: 0;
     bottom: -10px;
-    background-color: #feb7d9;
+    background-color: #ffffff;
     height: 2px;
     width: 50px;
 }
@@ -763,14 +762,14 @@ function doSearch() {
 
 .anuncio1 p {
     color: #ffffff;
-    margin-top: 40px;
+    margin-top: 20px;
     width: 150vh;
     margin-left: 130px;
 }
 
 .anuncio1 h1 {
     color: #ffffff;
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 2.5rem;
 }
 
