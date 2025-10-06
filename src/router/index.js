@@ -4,6 +4,7 @@ import CadastroView from '../views/CadastroView.vue'
 import CardsView from '../views/CardsView.vue'
 import EspecificacaoView from '../views/EspecificacaoView.vue'
 import CompraView from '../views/CompraView.vue'
+import ColecaoPageView from '@/views/ColecaoPageView.vue'
 
 
 const router = createRouter({
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/compra',
       name: 'Compra',
       component: CompraView
+    },
+    {
+      path: '/colecao/:id',
+      name: 'Colecao',
+      component: ColecaoPageView
     }
   ],
 })
