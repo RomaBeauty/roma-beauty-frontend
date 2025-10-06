@@ -77,9 +77,7 @@ function doSearch() {
                             <ul>
                                 <li @click="selecionarOpcao('maquiagem')">Maquiagem</li>
                                 <li @click="selecionarOpcao('skincare')">Skin Care</li>
-                                <li @click="selecionarOpcao('corporal')">Corporal</li>
                                 <li @click="selecionarOpcao('cabelo')">Cabelo</li>
-                                <li @click="selecionarOpcao('perfume')">Perfume</li>
                                 <li> <router-link to="/">Home</router-link></li>
 
                             </ul>
@@ -110,37 +108,38 @@ function doSearch() {
 
                                    <div v-else-if="opcaoSelecionada === 'skincare'" key="skincare">
                                     <ul>                                        
-                                        <li><router-link to="">Serum</router-link></li>
-                                        <li><router-link to="">Sabonete</router-link></li>
-                                        <li><router-link to="">Protetor Solar</router-link></li>
+                                        <li><router-link to="">esfoliante facial</router-link></li>
+                                        <li><router-link to="">máscara facial</router-link></li>
+                                        <li><router-link to="">protetor solar</router-link></li>
+                                        <li><router-link to="">sérum hidratante</router-link></li>
+                                        <li><router-link to="">tónico facial</router-link></li>
+                                        <li><router-link to="">creme hidratante</router-link></li>
 
                                     </ul>
                                 </div>
 
                                    <div v-else-if="opcaoSelecionada === 'cabelo'" key="cabelo">
                                     <ul>
-                                        <li><router-link to="">óleo</router-link></li>                                          
-                                        <li><router-link to="">Máscara</router-link></li>                                        
-                                        <li><router-link to="">Shampoo</router-link></li>                                               
-                                        <li><router-link to="">Condicionador</router-link></li>
-                                        <li><router-link to="">Proteto térmico</router-link></li>
+                                        <li><router-link to="/cards">shampoo</router-link></li>                                        
+                                        <li><router-link to="">condicionador</router-link></li>                                          
+                                        <li><router-link to="">máscara hidratação</router-link></li>                                        
+                                        <li><router-link to="">óleo capilar</router-link></li>                                               
+                                        <li><router-link to="">spray termoprotetor</router-link></li>
+                                        <li><router-link to="">creme para pentear</router-link></li>
 
                                     </ul>
                                 </div>
 
                                 <div v-else-if="opcaoSelecionada === 'maquiagem'" key="maquiagem">
                                     <ul>
-                                        <li><router-link to="/cards">Pó</router-link></li>                                        
-                                        <li><router-link to="">Base</router-link></li>                                       
-                                        <li><router-link to="">Rímel</router-link></li>
-                                        <li><router-link to="">Corretivo</router-link></li>
-                                        <li><router-link to="">Iluminador</router-link></li>
-                                        <li><router-link to="">Batom matte</router-link></li>
-                                        <li><router-link to="">Batom Líquido</router-link></li>
-                                        <li><router-link to="">Paleta de Sombra</router-link></li>
-                                        <li><router-link to="">Paleta de sobrancelha</router-link></li>
-
-
+                                        <li><router-link to="/cards">batom </router-link></li>                                        
+                                        <li><router-link to="">rímel </router-link></li>                                       
+                                        <li><router-link to="">delineador</router-link></li>
+                                        <li><router-link to="">paleta de sombra</router-link></li>
+                                        <li><router-link to="">base</router-link></li>
+                                        <li><router-link to="">blush</router-link></li>
+                                        <li><router-link to="">corretivo</router-link></li>
+                                        <li><router-link to="">iluminador</router-link></li>
 
                                     </ul>
                                 </div>
