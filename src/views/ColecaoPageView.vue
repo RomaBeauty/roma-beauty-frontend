@@ -14,6 +14,7 @@ const colecao = ref(null)
 const loading = ref(true)
 const error = ref(null)
 
+// 🔹 Buscar os produtos da coleção
 async function fetchColecao() {
   loading.value = true
   error.value = null
@@ -33,11 +34,13 @@ async function fetchColecao() {
 
 onMounted(() => fetchColecao())
 
+// 🔹 Formatar preço
 function fmtPrice(value) {
   if (value == null) return '0,00'
   return Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+// 🔹 Adicionar ao carrinho
 function addToCart(produto) {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]')
   cart.push({
@@ -50,8 +53,14 @@ function addToCart(produto) {
   alert(`${produto.nome} adicionado à sacola`)
 }
 
+// 🔹 Ir para página da coleção
 function goToColecao(colecaoId) {
   router.push(`/colecoes/${colecaoId}`)
+}
+
+// 🔹 Ir para página de especificação do produto
+function goToProduto(produtoId) {
+  router.push({ path: '/especificacao', query: { id: produtoId } })
 }
 </script>
 
@@ -65,11 +74,17 @@ function goToColecao(colecaoId) {
     <div v-if="error" style="color:tomato; padding:24px">Erro ao carregar produtos</div>
 
     <div class="card-container" v-else>
-      <div class="card" v-for="produto in produtos" :key="produto.id">
+      <div
+        class="card"
+        v-for="produto in produtos"
+        :key="produto.id"
+        @click="goToProduto(produto.id)"
+      >
         <div class="informacoes">
-          <div class="colecao">
+          <!-- 🔹 Impede clique de subir -->
+          <div class="colecao" @click.stop>
             <h2>
-              <router-link :to="`/colecoes/${produto.colecao?.id}`">
+              <router-link :to="`/colecoes/${produto.colecao?.id}`" @click.stop>
                 {{ produto.colecao?.nome || colecao?.nome }}
               </router-link>
             </h2>
@@ -90,15 +105,18 @@ function goToColecao(colecaoId) {
           </div>
 
           <div class="titulo-card">{{ produto.nome }}</div>
-          <div class="descricao-card">{{ produto.descricao_colecao || produto.colecao?.descricao || '' }}</div>
+          <div class="descricao-card">
+            {{ produto.descricao_colecao || produto.colecao?.descricao || '' }}
+          </div>
 
           <div class="valor-card">
             <div class="escrita-valor">R$</div>
             <div class="numero-valor">{{ fmtPrice(produto.preco) }}</div>
           </div>
 
+          <!-- 🔹 Impede clique do botão de navegar -->
           <div class="botao-card">
-            <button @click="addToCart(produto)">Adicionar à sacola</button>
+            <button @click.stop="addToCart(produto)">Adicionar à sacola</button>
           </div>
         </div>
       </div>
@@ -106,17 +124,8 @@ function goToColecao(colecaoId) {
   </div>
 </template>
 
-
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
-
-.banner1 img {
-  width: 145vh;
-  height: 430px;
-  z-index: 1;
-  border-radius: 20px;
-  margin-left: 30px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:wght@400;700;900&family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700;900&family=Poppins:wght@400;500;600;700&family=Work+Sans:wght@400;600;700&display=swap');
 
 .escrita-valor {
   font-size: 1.1rem;
@@ -138,31 +147,31 @@ function goToColecao(colecaoId) {
   margin-top: 2px;
 }
 
+.botao-card {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 .botao-card button {
-  width: 120px;
-  height: 35px;
-  text-decoration: none;
+  width: 170px;
+  height: 45px;
   border: none;
   box-shadow: 0 3px 10px rgba(0, 0, 0, .20);
-  margin-top: 5px;
   background-color: transparent;
   border-radius: 40px;
-  margin-left: 40px;
-  font-size: .9rem;
+  font-size: 1rem;
   font-weight: 600;
   font-family: "Poppins", sans-serif;
-
+  cursor: pointer;
 }
 
 .botao-card button:hover {
   background-color: #84827e;
   border: #84827e;
-  transition: ease 1s;
+  transition: ease 0.4s;
   color: #ffffff;
-
 }
-
-
 
 .titulo-card {
   font-size: 1.1rem;
@@ -202,34 +211,48 @@ function goToColecao(colecaoId) {
   opacity: 1;
 }
 
-
-
-.colecao {
-  display: grid;
-  grid-template-columns: 168px 80px;
+:deep(.colecao a) {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
 }
 
-.colecao i {
-  font-size: 1.7rem;
-  margin-top: 20px;
+:deep(.colecao a:hover) {
+  color: #84827e;
+  transition: color 0.3s ease;
+}
 
+.colecao a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.colecao a:hover {
+  color: #84827e;
+  transition: color 0.3s ease;
 }
 
 .informacoes {
   margin-left: 20px;
   font-family: "Poppins", sans-serif;
-
 }
 
 .card {
   box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
   height: 430px;
   border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .card-container {
   display: grid;
-  grid-template-columns: 250px 250px 250px 250px 250px;
+  grid-template-columns: repeat(5, 250px);
   gap: 30px;
   font-family: "Poppins", sans-serif;
   margin-top: 50px;
@@ -249,48 +272,6 @@ function goToColecao(colecaoId) {
   font-family: "Poppins", sans-serif;
   color: #ffffff;
   justify-content: center;
-  /* Centraliza horizontalmente */
   display: flex;
-
-}
-
-/*FILTRAGEM*/
-
-.filtragem {
-  font-family: 'Poppins', sans-serif;
-  margin-top: 50px;
-  text-align: center;
-  font-size: 1rem;
-  margin-left: 140px;
-  font-weight: 600;
-}
-
-.filtros {
-  display: flex;
-  margin-top: 40px;
-  gap: 10px;
-
-}
-
-.filtro {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
-  border-radius: 40px;
-  width: 200px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  /* Centraliza horizontalmente */
-  align-items: center;
-}
-
-.filtro:hover {
-  background-color: #84827e;
-  transition: ease .5s;
-  color: #ffffff;
-}
-
-.filtro i {
-  margin-right: 10px;
-  margin-top: -5px;
 }
 </style>

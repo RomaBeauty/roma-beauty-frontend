@@ -13,9 +13,9 @@ const error = ref(null)
 
 // Categoria e tipo de produto
 const CATEGORY_NAME = 'Cabelo'
-const PRODUCT_TYPE = 'Shampoo'  // <-- Aqui definimos que é Shampoo
+const PRODUCT_TYPE = 'Shampoo'
 
-// buscar produtos da API
+// Buscar produtos da API
 async function fetchProducts() {
   loading.value = true
   error.value = null
@@ -34,34 +34,46 @@ onMounted(() => {
   fetchProducts()
 })
 
-// filtrar apenas Shampoo da categoria Cabelo
+// Filtrar apenas Shampoo da categoria Cabelo
 const filteredProducts = computed(() => {
   return products.value.filter(p => {
     if (!p.category || !p.tipo) return false
     const categoryName = p.category.nome || p.category.name || p.category
     const typeName = p.tipo.nome || p.tipo.name || p.tipo
-    return categoryName.toLowerCase() === CATEGORY_NAME.toLowerCase()
-      && typeName.toLowerCase() === PRODUCT_TYPE.toLowerCase()
+    return (
+      categoryName.toLowerCase() === CATEGORY_NAME.toLowerCase() &&
+      typeName.toLowerCase() === PRODUCT_TYPE.toLowerCase()
+    )
   })
 })
 
-// formato de preço
+// Formatar preço
 function fmtPrice(value) {
   if (value == null) return '0,00'
   return Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-// adicionar ao carrinho
+// Adicionar ao carrinho
 function addToCart(produto) {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]')
-  cart.push({ id: produto.id, nome: produto.nome, preco: produto.preco, imagem: produto.imagem_produto })
+  cart.push({
+    id: produto.id,
+    nome: produto.nome,
+    preco: produto.preco,
+    imagem: produto.imagem_produto
+  })
   localStorage.setItem('cart', JSON.stringify(cart))
   alert(`${produto.nome} adicionado à sacola`)
 }
 
-// navegar para página da coleção
+// Navegar para a página da coleção
 function goToColecao(colecaoId) {
   router.push(`/colecoes/${colecaoId}`)
+}
+
+// Navegar para a página de especificação do produto
+function goToProduto(produtoId) {
+  router.push({ path: '/especificacao', query: { id: produtoId } })
 }
 </script>
 
@@ -75,28 +87,39 @@ function goToColecao(colecaoId) {
     <div v-if="error" style="color:tomato; padding:24px">Erro ao carregar produtos</div>
 
     <div class="card-container" v-else>
-      <div class="card" v-for="produto in filteredProducts" :key="produto.id">
+      <div
+        class="card"
+        v-for="produto in filteredProducts"
+        :key="produto.id"
+        @click="goToProduto(produto.id)"
+      >
         <div class="informacoes">
-          <div class="colecao">
+          <div class="colecao" @click.stop>
             <h2>
-              <router-link :to="`/colecao/${produto.colecao.id}`">
+              <router-link :to="`/colecao/${produto.colecao.id}`" @click.stop>
                 {{ produto.colecao.nome }}
               </router-link>
             </h2>
-
             <i class="fa-regular fa-heart"></i>
           </div>
 
           <div class="imagem-card">
-            <img :src="produto.imagem_produto || produto.colecao?.imagem_mostruario || '/fallback.png'" alt="Normal"
-              class="normal" />
+            <img
+              :src="produto.imagem_produto || produto.colecao?.imagem_mostruario || '/fallback.png'"
+              alt="Normal"
+              class="normal"
+            />
             <img
               :src="produto.imagem_amostra || produto.colecao?.imagem_mostruario || produto.imagem_produto || '/fallback.png'"
-              alt="Molhado" class="hover" />
+              alt="Molhado"
+              class="hover"
+            />
           </div>
 
           <div class="titulo-card">{{ produto.nome }}</div>
-          <div class="descricao-card">{{ produto.descricao_colecao || produto.colecao?.descricao || '' }}</div>
+          <div class="descricao-card">
+            {{ produto.descricao_colecao || produto.colecao?.descricao || '' }}
+          </div>
 
           <div class="valor-card">
             <div class="escrita-valor">R$</div>
@@ -104,15 +127,13 @@ function goToColecao(colecaoId) {
           </div>
 
           <div class="botao-card">
-            <button @click="addToCart(produto)">Adicionar a sacola</button>
+            <button @click.stop="addToCart(produto)">Adicionar a sacola</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
 
 
 
@@ -147,31 +168,32 @@ function goToColecao(colecaoId) {
   margin-top: 2px;
 }
 
+.botao-card {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 .botao-card button {
-  width: 120px;
-  height: 35px;
+  width: 170px;
+  height: 45px;
   text-decoration: none;
   border: none;
   box-shadow: 0 3px 10px rgba(0, 0, 0, .20);
-  margin-top: 5px;
   background-color: transparent;
   border-radius: 40px;
-  margin-left: 40px;
-  font-size: .9rem;
+  font-size: 1rem;
   font-weight: 600;
   font-family: "Poppins", sans-serif;
-
+  cursor: pointer;
 }
 
 .botao-card button:hover {
   background-color: #84827e;
   border: #84827e;
-  transition: ease 1s;
+  transition: ease 0.4s;
   color: #ffffff;
-
 }
-
-
 
 .titulo-card {
   font-size: 1.1rem;
@@ -211,29 +233,43 @@ function goToColecao(colecaoId) {
   opacity: 1;
 }
 
-
-
-.colecao {
-  display: grid;
-  grid-template-columns: 168px 80px;
+:deep(.colecao a) {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
 }
 
-.colecao i {
-  font-size: 1.7rem;
-  margin-top: 20px;
+:deep(.colecao a:hover) {
+  color: #84827e;
+  transition: color 0.3s ease;
+}
 
+.colecao a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.colecao a:hover {
+  color: #84827e;
+  transition: color 0.3s ease;
 }
 
 .informacoes {
   margin-left: 20px;
   font-family: "Poppins", sans-serif;
-
 }
 
 .card {
   box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
   height: 430px;
   border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .card-container {
@@ -258,12 +294,8 @@ function goToColecao(colecaoId) {
   font-family: "Poppins", sans-serif;
   color: #ffffff;
   justify-content: center;
-  /* Centraliza horizontalmente */
   display: flex;
-
 }
-
-/*FILTRAGEM*/
 
 .filtragem {
   font-family: 'Poppins', sans-serif;
@@ -278,7 +310,6 @@ function goToColecao(colecaoId) {
   display: flex;
   margin-top: 40px;
   gap: 10px;
-
 }
 
 .filtro {
@@ -288,7 +319,6 @@ function goToColecao(colecaoId) {
   height: 40px;
   display: flex;
   justify-content: center;
-  /* Centraliza horizontalmente */
   align-items: center;
 }
 

@@ -1,409 +1,135 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
 
+const route = useRoute();
 
-// Accordion state
-const activeSection = ref<string | null>(null)
-const toggleSection = (section: string) => {
-  activeSection.value = activeSection.value === section ? null : section
-}
+const produto = ref<any>(null);
+const loading = ref(true);
+const error = ref<string | null>(null);
+const API_BASE: string =  "http://127.0.0.1:8000/api";
 
-
-// Galeria de imagens
-const imagens = [
-  '/cabelo/valentine-cabelo2.png',
-  '/cabelo/valentine-cabelo3.png',
-  '/cabelo/valentine-cabelo4.png'
-]
-
-
-const imagemAtual = ref(imagens[0])
-const trocarImagem = (src: string) => {
-  if (imagemAtual.value !== src) imagemAtual.value = src
-}
-
-
-// Lista de passos
-
-const passos = [
-  { numero: 1, titulo: "Shampoo Super", desc: "Limpa e hidrata", subtitulo: "Limpeza", img: "/imagem/shampoo-conteudo.png" },
-  { numero: 2, titulo: "Condicionador Super", desc: "Nutre e desembaraça", subtitulo: "Ajuda", img: "/imagem/hidratação-conteudo.png" },
-  { numero: 3, titulo: "Máscara Super", desc: "Hidratação profunda", subtitulo: "Tratamento", img: "/imagem/shampoo-conteudo.png" },
-  { numero: 4, titulo: "Óleo Super", desc: "Brilho e maciez", subtitulo: "Finalização", img: "/imagem/spray-conteudo.png" },
-  { numero: 5, titulo: "Geleia Super", desc: "Modela e define", subtitulo: "Estilo", img: "/imagem/oil-conteudo.png" },
-  { numero: 6, titulo: "Leave-in Super", desc: "Protege e suaviza", subtitulo: "Proteção", img: "/imagem/pentear-conteudo.png" }
-]
-
-const passoAtivo = ref(passos[0])
-
-const trocarPasso = (passo: any) => {
-  passoAtivo.value = passo
-}
-
-
-const menuAberto = ref(false)
-const opcaoSelecionada = ref(null)
-
-function toggleMenu() {
-  menuAberto.value = !menuAberto.value
-  opcaoSelecionada.value = null
-}
-
-function selecionarOpcao(opcao) {
-  opcaoSelecionada.value = opcao
-}
-
-
-const showUsuario = ref(false)
-const showCompra = ref(false)
-const showPesquisa = ref(false)
-const showMenu = ref(false)
-
-
-function toggleUsuario() {
-  showUsuario.value = !showUsuario.value
-}
-
-function toggleCompra() {
-  showCompra.value = !showCompra.value
-}
-
-function togglePesquisa() {
-  showPesquisa.value = !showPesquisa.value
-}
-
-/*IMAGEM*/
-const defaultImg = '/public/imagem/usuario4.jpg'  // coloque sua imagem padrão em /public
-const preview = ref(null)
-
-function onFileChange(event) {
-  const file = event.target.files[0]
-  if (!file) return
-
-  // Criar preview da imagem
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    preview.value = e.target.result
+// Função para buscar o produto pelo ID da URL
+async function fetchProduto() {
+  loading.value = true;
+  try {
+    const id = route.query.id as string; // ✅ pega o id da query
+    if (!id) throw new Error("ID do produto não fornecido");
+    const res = await axios.get(`${API_BASE}/produtos/${id}/`);
+    produto.value = res.data;
+  } catch (err: any) {
+    console.error(err);
+    error.value = "Erro ao carregar o produto";
+  } finally {
+    loading.value = false;
   }
-  reader.readAsDataURL(file)
 }
 
-/*pesquisa */
 
-const search = ref("")
+onMounted(fetchProduto);
 
-function doSearch() {
-  alert(`Você pesquisou: ${search.value}`)
-}
-
+// Controle dos accordions
+const activeSection = ref<string | null>(null);
+const toggleSection = (section: string) => {
+  activeSection.value = activeSection.value === section ? null : section;
+};
 </script>
 
 <template>
-
-  <div class="inicio">
-    <div class="menu-container">
-      <!-- Botão do Menu -->
-      <div class="menu" @click="toggleMenu">
-        <i class="fa-solid fa-bars"></i>
-      </div>
-
-      <!-- Modal Lateral do Menu -->
-      <div class="overlay" :class="{ show: menuAberto }" @click.self="toggleMenu">
-        <div class="side-menu" :class="{ show: menuAberto }">
-          <button @click="toggleMenu"><i class="fa-solid fa-xmark"></i></button>
-
-          <div class="menu-content">
-            <!-- Coluna de categorias -->
-            <div class="categorias">
-              <h3>Categorias</h3>
-                            <ul>
-                                <li @click="selecionarOpcao('maquiagem')">Maquiagem</li>
-                                <li @click="selecionarOpcao('skincare')">Skin Care</li>
-                                <li @click="selecionarOpcao('corporal')">Corporal</li>
-                                <li @click="selecionarOpcao('cabelo')">Cabelo</li>
-                                <li @click="selecionarOpcao('perfume')">Perfume</li>
-                                <li> <router-link to="/">Home</router-link></li>
-
-                            </ul>
-                        </div>
-
-                        <!-- Coluna de submenus -->
-                        <!-- Coluna de submenus -->
-                        <div class="subcategorias">
-                            <transition name="fade-slide" mode="out-in">
-                                <div v-if="opcaoSelecionada === 'perfume'" key="perfume">
-                                    <ul>
-                                        <li><router-link to="">Perfume</router-link></li>
-                                        <li><router-link to="">Colônia</router-link></li>                                        
-                                        <li><router-link to="">Body Splash</router-link></li>
-
-                                    </ul>
-                                </div>
-
-                                <div v-else-if="opcaoSelecionada === 'corporal'" key="corporal">
-                                    <ul>
-                                        <li><router-link to="">Óleo</router-link></li>                                        
-                                        <li><router-link to="">Creme</router-link></li>
-                                        <li><router-link to="">Esfoliante</router-link></li>
-                                        <li><router-link to="">hidratante</router-link></li>
-
-                                    </ul>
-                                </div>
-
-                                   <div v-else-if="opcaoSelecionada === 'skincare'" key="skincare">
-                                    <ul>                                        
-                                        <li><router-link to="">Serum</router-link></li>
-                                        <li><router-link to="">Sabonete</router-link></li>
-                                        <li><router-link to="">Protetor Solar</router-link></li>
-
-                                    </ul>
-                                </div>
-
-                                   <div v-else-if="opcaoSelecionada === 'cabelo'" key="cabelo">
-                                    <ul>
-                                        <li><router-link to="">óleo</router-link></li>                                          
-                                        <li><router-link to="">Máscara</router-link></li>                                        
-                                        <li><router-link to="">Shampoo</router-link></li>                                               
-                                        <li><router-link to="">Condicionador</router-link></li>
-                                        <li><router-link to="">Proteto térmico</router-link></li>
-                                    </ul>
-                                </div>
-                                <div v-else-if="opcaoSelecionada === 'maquiagem'" key="maquiagem">
-                                    <ul>
-                                        <li><router-link to="/cards">Pó</router-link></li>                                        
-                                        <li><router-link to="">Base</router-link></li>                                       
-                                        <li><router-link to="">Rímel</router-link></li>
-                                        <li><router-link to="">Corretivo</router-link></li>
-                                        <li><router-link to="">Iluminador</router-link></li>
-                                        <li><router-link to="">Batom matte</router-link></li>
-                                        <li><router-link to="">Batom Líquido</router-link></li>
-                                        <li><router-link to="">Paleta de Sombra</router-link></li>
-                                        <li><router-link to="">Paleta de sobrancelha</router-link></li>
-                                    </ul>
-                </div>
-              </transition>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-      <div class="nome-logo">
-        <img src="/public/imagem/logo.png" alt="">
-      </div>
-
-      <div class="icons-menu">
-        <i class="fa-solid fa-magnifying-glass" @click="togglePesquisa"></i>
-        <i class="fa-solid fa-user" @click="toggleUsuario"></i>
-        <i class="fa-solid fa-bag-shopping" @click="toggleCompra"></i>
-      </div>
-    </div>
-    <!-- Modal Usuário -->
-    <div class="overlay" :class="{ show: showUsuario }" @click.self="toggleUsuario">
-      <div class="side-modal" :class="{ show: showUsuario }">
-        <button @click="toggleUsuario"><i class="fa-solid fa-xmark"></i></button>
-        <div class="imagem-user"></div>
-        <div class="perfil-container">
-          <img :src="preview || defaultImg" alt="Foto de perfil" class="perfil-img" />
-          <input type="file" @change="onFileChange" accept="image/*" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Compra -->
-    <div class="overlay" :class="{ show: showCompra }" @click.self="toggleCompra">
-      <div class="side-modal" :class="{ show: showCompra }">
-        <button @click="toggleCompra"><i class="fa-solid fa-xmark"></i></button>
-        <div class="linhas">
-          <div class="linha1"></div>
-          <div class="linha2"></div>
-          <div class="linha3"></div>
-
-        </div>
-        <div class="linha4"></div>
-        <div class="linha5"></div>
-      </div>
-    </div>
-
-    <!-- Modal Pesquisa -->
-    <div class="overlay" :class="{ show: showPesquisa }" @click.self="togglePesquisa">
-      <div class="side-modal" :class="{ show: showPesquisa }">
-        <button @click="togglePesquisa"><i class="fa-solid fa-xmark"></i></button>
-        <div class="search-container">
-
-          <input v-model="search" type="text" placeholder="Pesquisar... " class="search-input" />
-          <button @click="doSearch" class="search-btn"></button>
-        </div>
-        <h2>Sugestões</h2>
-
-      </div>
-    </div>
-
-
-  </div>
-
-  <div class="container">
+  <div v-if="loading" class="carregando">Carregando produto...</div>
+  <div v-else-if="error" class="erro">{{ error }}</div>
+  
+  <div v-else class="container">
+    <!-- IMAGEM PRINCIPAL -->
     <div class="imagens-container">
-      <img src="/cabelo/valentine-cabelo2.png" alt="">
+      <img
+        :src="produto.imagem_produto || produto.imagem_amostra || '/fallback.png'"
+        alt="imagem do produto"
+      />
     </div>
 
-    <!-- ESPECIFICAÇÕES -->
+    <!-- BLOCO DE ESPECIFICAÇÕES -->
     <div class="expecificacoes-container">
-      <div class="icones">
-        <div class="icone-carrinho"><i class="fa-solid fa-cart-shopping"></i></div>
-        <div class="icone-favorito"><i class="fa-regular fa-heart"></i></div>
-      </div>
-      <div class="expecificacao">Máscara Super Inteligente 500g</div>
+      <div class="icone-favorito"><i class="fa-regular fa-heart"></i></div>
 
-      <div class="expecificacao-menor">Cabelo</div>
-      <div class="detalhes">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia, veniam! Commodi amet
-        placeat est dignissimos voluptatem deserunt exercitationem quo iure quasi laudantium velit quibusdam praesentium
-        error, quos provident. Iure, quisquam.</div>
-      <div class="estrelas">
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i>
+      <div class="expecificacao">
+        {{ produto.nome || 'Nome do produto' }}
       </div>
-      <div class="botao-compra"><router-link to="/compra"><button>Comprar</button></router-link></div>
-      <!-- Aplicação -->
+
+      <div class="expecificacao-menor">
+        {{ produto.category?.nome || produto.category || 'Categoria' }}
+      </div>
+
+      <div class="detalhes">
+        {{ produto.descricao || produto.colecao?.descricao || 'Descrição do produto.' }}
+      </div>
+
+      <div class="valor">
+        <span class="escrita-valor">R$</span>
+        <span class="numero-valor">
+          {{ Number(produto.preco || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}
+        </span>
+      </div>
+
+      <div class="botao-compra">
+        <button>Adicionar à sacola</button>
+      </div>
+
+      <!-- ACCORDION COMPLETO -->
       <div class="accordion">
-        <div class="accordion-header" @click="toggleSection('aplicacao')">
-          Aplicação
-        </div>
-        <div class="accordion-content" :class="{ open: activeSection === 'aplicacao' }">
-          <p>
-            Aplique nos cabelos úmidos, massageando suavemente da raiz às
-            pontas. Enxágue bem.
-          </p>
-        </div>
-      </div>
-
-      <!-- Ingredientes -->
-      <div class="accordion">
-        <div class="accordion-header" @click="toggleSection('ingredientes')">
-          Ingredientes
-        </div>
-        <div class="accordion-content" :class="{ open: activeSection === 'ingredientes' }">
-          <p>
-            Água, Óleo de Argan, Queratina Hidrolisada, Extrato de Aloe Vera,
-            Vitaminas A e E.
-          </p>
-        </div>
-      </div>
-
-      <!-- Benefícios -->
-      <div class="accordion">
-        <div class="accordion-header" @click="toggleSection('beneficios')">
-          Benefícios
-        </div>
-        <div class="accordion-content" :class="{ open: activeSection === 'beneficios' }">
-          <p>
-            • Hidratação intensa <br>
-            • Redução do frizz <br>
-            • Brilho e maciez imediatos
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="cores-container">
-      <!-- lado esquerdo: imagem + círculos -->
-      <div class="esquerda">
-        <!-- imagem -->
-        <transition name="fade" mode="out-in">
-          <img :key="passoAtivo.img" :src="passoAtivo.img" alt="" class="imagem-passo" />
-        </transition>
-
-        <!-- círculos embaixo da imagem -->
-        <div class="texto">
-          <transition name="fade" mode="out-in">
-            <div :key="passoAtivo.numero">
-              <h3>{{ passoAtivo.titulo }}</h3>
-              <div class="linha"></div>
-              <p>{{ passoAtivo.desc }}</p>
-            </div>
-          </transition>
+        <div class="accordion-item" @click="toggleSection('composicao')">
+          <div class="accordion-title">
+            <span>Composição</span>
+            <i
+              :class="activeSection === 'composicao'
+                ? 'fa-solid fa-chevron-up'
+                : 'fa-solid fa-chevron-down'"
+            ></i>
+          </div>
+          <div class="accordion-content" v-if="activeSection === 'composicao'">
+            <p>{{ produto.composicao || 'Informações de composição não disponíveis.' }}</p>
+          </div>
         </div>
 
-        <div class="circulos">
-          <div v-for="p in passos" :key="p.numero" class="circle" :class="{ ativo: passoAtivo.numero === p.numero }"
-            @mouseenter="trocarPasso(p)">
-            <h1>{{ p.numero }}</h1>
-            <h2>{{ p.subtitulo }}</h2>
+        <div class="accordion-item" @click="toggleSection('modo')">
+          <div class="accordion-title">
+            <span>Modo de Uso</span>
+            <i
+              :class="activeSection === 'modo'
+                ? 'fa-solid fa-chevron-up'
+                : 'fa-solid fa-chevron-down'"
+            ></i>
+          </div>
+          <div class="accordion-content" v-if="activeSection === 'modo'">
+            <p>{{ produto.modo_uso || 'Modo de uso não informado.' }}</p>
+          </div>
+        </div>
+
+        <div class="accordion-item" @click="toggleSection('indicacao')">
+          <div class="accordion-title">
+            <span>Indicação</span>
+            <i
+              :class="activeSection === 'indicacao'
+                ? 'fa-solid fa-chevron-up'
+                : 'fa-solid fa-chevron-down'"
+            ></i>
+          </div>
+          <div class="accordion-content" v-if="activeSection === 'indicacao'">
+            <p>{{ produto.indicacao || 'Indicação não informada.' }}</p>
           </div>
         </div>
       </div>
-
-
     </div>
-    <div class="imagem-container"></div>
+
+    <!-- BANNER DO MOSTRUÁRIO OU DA COLEÇÃO -->
     <div class="banner">
-      <img src="/public/cabelo/valentine-juntos.png" alt="">
+      <img
+        :src="produto.colecao?.imagem_mostruario || produto.imagem_amostra || '/fallback.png'"
+        alt="banner da coleção"
+      />
     </div>
-
-
   </div>
-
-
-  <footer class="my-footer">
-    <div class="my-container">
-      <div class="my-row">
-        <!-- Coluna 1 -->
-        <div class="my-footer-col">
-          <h4>Sobre a Roma Beauty</h4>
-          <ul>
-            <li><router-link to="#">Nossa história</router-link></li>
-            <li><router-link to="#">Missão e valores</router-link></li>
-            <li><router-link to="#">Política de privacidade</router-link></li>
-            <li><router-link to="#">Afiliados</router-link></li>
-          </ul>
-        </div>
-
-        <!-- Coluna 2 -->
-        <div class="my-footer-col">
-          <h4>Ajuda</h4>
-          <ul>
-            <li><router-link to="#">FAQ</router-link></li>
-            <li><router-link to="#">Envio</router-link></li>
-            <li><router-link to="#">Devoluções</router-link></li>
-            <li><router-link to="#">Status do pedido</router-link></li>
-            <li><router-link to="#">Formas de pagamento</router-link></li>
-          </ul>
-        </div>
-
-        <!-- Coluna 3 -->
-        <div class="my-footer-col">
-          <h4>Produtos</h4>
-          <ul>
-            <li><router-link to="#">Perfumes</router-link></li>
-            <li><router-link to="#">Cremes</router-link></li>
-            <li><router-link to="#">Body Splash</router-link></li>
-            <li><router-link to="#">Desodorantes</router-link></li>
-          </ul>
-        </div>
-
-        <!-- Coluna 4 -->
-        <div class="my-footer-col">
-          <h4>Siga-nos</h4>
-          <div class="my-social-links">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Dica: este link do Font Awesome é melhor ficar em index.html -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
-    integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </template>
 
 <style scoped>
@@ -1293,5 +1019,127 @@ function doSearch() {
   width: 100%;
   height: auto;
   display: block;
+}
+/* layout completo original */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  padding: 40px;
+}
+
+.imagens-container img {
+  width: 400px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.expecificacoes-container {
+  width: 600px;
+  margin-top: 30px;
+  text-align: left;
+  position: relative;
+}
+
+.icone-favorito {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.expecificacao {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.expecificacao-menor {
+  font-size: 1rem;
+  color: gray;
+  margin-bottom: 15px;
+}
+
+.detalhes {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.valor {
+  display: flex;
+  align-items: baseline;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.escrita-valor {
+  font-size: 1rem;
+  margin-right: 4px;
+}
+
+.numero-valor {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.botao-compra {
+  display: flex;
+  justify-content: center;
+}
+
+.botao-compra button {
+  width: 200px;
+  height: 45px;
+  border-radius: 40px;
+  border: none;
+  background: #84827e;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.botao-compra button:hover {
+  background-color: #6d6b68;
+  transition: 0.3s ease;
+}
+
+.accordion {
+  margin-top: 30px;
+}
+
+.accordion-item {
+  border-top: 1px solid #ccc;
+  padding: 15px 0;
+  cursor: pointer;
+}
+
+.accordion-title {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.accordion-content {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.banner img {
+  width: 100%;
+  margin-top: 60px;
+  border-radius: 20px;
+}
+
+.carregando,
+.erro {
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  font-size: 1.3rem;
+  margin-top: 80px;
 }
 </style>
