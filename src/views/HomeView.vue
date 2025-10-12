@@ -1,61 +1,75 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from "vue"
+import axios from "axios"
+
+const API_URL_CATEGORIAS = "http://127.0.0.1:8000/api/categories/"
+const API_URL_TIPOS = "http://127.0.0.1:8000/api/tipos/"
 
 const menuAberto = ref(false)
 const opcaoSelecionada = ref(null)
+const categorias = ref([])
 
 function toggleMenu() {
     menuAberto.value = !menuAberto.value
     opcaoSelecionada.value = null
 }
 
-function selecionarOpcao(opcao) {
-    opcaoSelecionada.value = opcao
+function selecionarOpcao(cat) {
+    opcaoSelecionada.value = cat
 }
-
 
 const showUsuario = ref(false)
 const showCompra = ref(false)
 const showPesquisa = ref(false)
-const showMenu = ref(false)
-
-
-function toggleUsuario() {
-    showUsuario.value = !showUsuario.value
-}
-
-function toggleCompra() {
-    showCompra.value = !showCompra.value
-}
-
-function togglePesquisa() {
-    showPesquisa.value = !showPesquisa.value
-}
-
-/*IMAGEM*/
-const defaultImg = '/public/imagem/usuario4.jpg'  // coloque sua imagem padrão em /public
+const search = ref("")
+const defaultImg = "/public/imagem/usuario4.jpg"
 const preview = ref(null)
+
+function toggleUsuario() { showUsuario.value = !showUsuario.value }
+function toggleCompra() { showCompra.value = !showCompra.value }
+function togglePesquisa() { showPesquisa.value = !showPesquisa.value }
 
 function onFileChange(event) {
     const file = event.target.files[0]
     if (!file) return
-
-    // Criar preview da imagem
     const reader = new FileReader()
-    reader.onload = (e) => {
-        preview.value = e.target.result
-    }
+    reader.onload = (e) => (preview.value = e.target.result)
     reader.readAsDataURL(file)
 }
-
-/*pesquisa */
-
-const search = ref("")
 
 function doSearch() {
     alert(`Você pesquisou: ${search.value}`)
 }
+
+/* 🔥 Busca categorias e tipos do backend e associa */
+async function fetchCategoriasETipos() {
+    try {
+        // 1. Busca categorias (paginadas)
+        const resCat = await axios.get(API_URL_CATEGORIAS)
+        const categoriasData = resCat.data.results || resCat.data
+
+        // 2. Busca tipos
+        const resTipos = await axios.get(API_URL_TIPOS)
+        const tiposData = resTipos.data.results || resTipos.data
+
+        // 3. Junta tipos em suas respectivas categorias
+        const categoriasComTipos = categoriasData.map(cat => ({
+            ...cat,
+            tipos: tiposData.filter(tipo => tipo.categoria === cat.id)
+        }))
+
+        categorias.value = categoriasComTipos
+        console.log("✅ Categorias + Tipos:", categoriasComTipos)
+    } catch (error) {
+        console.error("❌ Erro ao carregar categorias/tipos:", error)
+    }
+}
+
+onMounted(fetchCategoriasETipos)
 </script>
+
+
+
 
 <template>
     <div class="inicio">
@@ -75,76 +89,28 @@ function doSearch() {
                         <div class="categorias">
                             <h3>Categorias</h3>
                             <ul>
-                                <li @click="selecionarOpcao('maquiagem')">Maquiagem</li>
-                                <li @click="selecionarOpcao('skincare')">Skin Care</li>
-                                <li @click="selecionarOpcao('cabelo')">Cabelo</li>
-                                <li> <router-link to="/">Home</router-link></li>
-
+                                <li v-for="cat in categorias" :key="cat.id" @click="selecionarOpcao(cat)">
+                                    {{ cat.nome }}
+                                </li>
+                                <li><router-link to="/">Home</router-link></li>
                             </ul>
                         </div>
 
-                        <!-- Coluna de submenus -->
-                        <!-- Coluna de submenus -->
                         <div class="subcategorias">
                             <transition name="fade-slide" mode="out-in">
-                                <div v-if="opcaoSelecionada === 'perfume'" key="perfume">
+                                <div v-if="opcaoSelecionada" :key="opcaoSelecionada.id">
+                                    <h4>{{ opcaoSelecionada.nome }}</h4>
                                     <ul>
-                                        <li><router-link to="">Perfume</router-link></li>
-                                        <li><router-link to="">Colônia</router-link></li>                                        
-                                        <li><router-link to="">Body Splash</router-link></li>
-
-                                    </ul>
-                                </div>
-
-                                <div v-else-if="opcaoSelecionada === 'corporal'" key="corporal">
-                                    <ul>
-                                        <li><router-link to="">Óleo</router-link></li>                                        
-                                        <li><router-link to="">Creme</router-link></li>
-                                        <li><router-link to="">Esfoliante</router-link></li>
-                                        <li><router-link to="">hidratante</router-link></li>
-
-                                    </ul>
-                                </div>
-
-                                   <div v-else-if="opcaoSelecionada === 'skincare'" key="skincare">
-                                    <ul>                                        
-                                        <li><router-link to="">esfoliante facial</router-link></li>
-                                        <li><router-link to="">máscara facial</router-link></li>
-                                        <li><router-link to="">protetor solar</router-link></li>
-                                        <li><router-link to="">sérum hidratante</router-link></li>
-                                        <li><router-link to="">tónico facial</router-link></li>
-                                        <li><router-link to="">creme hidratante</router-link></li>
-
-                                    </ul>
-                                </div>
-
-                                   <div v-else-if="opcaoSelecionada === 'cabelo'" key="cabelo">
-                                    <ul>
-                                        <li><router-link to="/cards">shampoo</router-link></li>                                        
-                                        <li><router-link to="">condicionador</router-link></li>                                          
-                                        <li><router-link to="">máscara hidratação</router-link></li>                                        
-                                        <li><router-link to="">óleo capilar</router-link></li>                                               
-                                        <li><router-link to="">spray termoprotetor</router-link></li>
-                                        <li><router-link to="">creme para pentear</router-link></li>
-
-                                    </ul>
-                                </div>
-
-                                <div v-else-if="opcaoSelecionada === 'maquiagem'" key="maquiagem">
-                                    <ul>
-                                        <li><router-link to="/cards">batom </router-link></li>                                        
-                                        <li><router-link to="">rímel </router-link></li>                                       
-                                        <li><router-link to="">delineador</router-link></li>
-                                        <li><router-link to="">paleta de sombra</router-link></li>
-                                        <li><router-link to="">base</router-link></li>
-                                        <li><router-link to="">blush</router-link></li>
-                                        <li><router-link to="">corretivo</router-link></li>
-                                        <li><router-link to="">iluminador</router-link></li>
-
+                                        <li v-for="tipo in opcaoSelecionada.tipos" :key="tipo.id">
+                                            <router-link :to="'/cards?tipo=' + tipo.id">{{ tipo.nome }}</router-link>
+                                        </li>
                                     </ul>
                                 </div>
                             </transition>
                         </div>
+
+
+
 
                     </div>
                 </div>
