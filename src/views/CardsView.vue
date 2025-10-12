@@ -1,27 +1,28 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
 
 const products = ref([])
+const tipos = ref([])
 const loading = ref(true)
 const error = ref(null)
 
-// Categoria e tipo de produto
-const CATEGORY_NAME = 'Cabelo'
-const PRODUCT_TYPE = 'Shampoo'
+const selectedTypeId = ref(null)
+const selectedTypeName = ref("")
 
-// Buscar produtos da API
+// 🧠 Buscar produtos
 async function fetchProducts() {
   loading.value = true
   error.value = null
   try {
     const res = await axios.get(`${API_BASE}/produtos/`)
-    products.value = res.data.results
+    products.value = res.data.results || res.data
   } catch (err) {
     console.error(err)
     error.value = err
@@ -30,30 +31,57 @@ async function fetchProducts() {
   }
 }
 
-onMounted(() => {
+// 🧠 Buscar tipos
+async function fetchTipos() {
+  try {
+    const res = await axios.get(`${API_BASE}/tipos/`)
+    tipos.value = res.data.results || res.data
+  } catch (err) {
+    console.error("Erro ao buscar tipos:", err)
+  }
+}
+
+// 🧩 Ler o tipo da URL e achar o nome
+function loadTipoFromURL() {
+  selectedTypeId.value = Number(route.query.tipo)
+
+  if (tipos.value.length > 0 && selectedTypeId.value) {
+    const tipoObj = tipos.value.find(t => t.id === selectedTypeId.value)
+    selectedTypeName.value = tipoObj ? tipoObj.nome : ""
+  } else {
+    selectedTypeName.value = ""
+  }
+}
+
+// 👀 Atualiza se a rota mudar
+watch(() => route.query, loadTipoFromURL, { immediate: true })
+
+// 🚀 Inicialização
+onMounted(async () => {
+  await fetchTipos()
+  loadTipoFromURL()
   fetchProducts()
 })
 
-// Filtrar apenas Shampoo da categoria Cabelo
+// 🔍 Filtra produtos pelo tipo selecionado
 const filteredProducts = computed(() => {
+  if (!selectedTypeId.value) return products.value
   return products.value.filter(p => {
-    if (!p.category || !p.tipo) return false
-    const categoryName = p.category.nome || p.category.name || p.category
-    const typeName = p.tipo.nome || p.tipo.name || p.tipo
-    return (
-      categoryName.toLowerCase() === CATEGORY_NAME.toLowerCase() &&
-      typeName.toLowerCase() === PRODUCT_TYPE.toLowerCase()
-    )
+    const tipoId = typeof p.tipo === "object" ? p.tipo.id : p.tipo
+    return tipoId === selectedTypeId.value
   })
 })
 
-// Formatar preço
+// 💰 Formatar preço
 function fmtPrice(value) {
   if (value == null) return '0,00'
-  return Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return Number(value).toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })
 }
 
-// Adicionar ao carrinho
+// 🛍️ Adicionar ao carrinho
 function addToCart(produto) {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]')
   cart.push({
@@ -66,21 +94,19 @@ function addToCart(produto) {
   alert(`${produto.nome} adicionado à sacola`)
 }
 
-// Navegar para a página da coleção
-function goToColecao(colecaoId) {
-  router.push(`/colecoes/${colecaoId}`)
-}
-
-// Navegar para a página de especificação do produto
+// 🔗 Ir para página do produto
 function goToProduto(produtoId) {
   router.push({ path: '/especificacao', query: { id: produtoId } })
 }
 </script>
 
+
 <template>
   <div>
     <div class="titulo">
-      <h1>{{ CATEGORY_NAME.toUpperCase() }} - {{ PRODUCT_TYPE.toUpperCase() }}</h1>
+      <h1>
+        {{ selectedTypeName ? selectedTypeName.toUpperCase() : 'TODOS OS PRODUTOS' }}
+      </h1>
     </div>
 
     <div v-if="loading" style="padding:24px">Carregando produtos...</div>
