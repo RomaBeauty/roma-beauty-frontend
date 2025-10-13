@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue"
+import { useRouter } from 'vue-router'
 import axios from "axios"
 
 const API_URL_CATEGORIAS = "http://127.0.0.1:8000/api/categories/"
@@ -8,7 +9,7 @@ const API_URL_TIPOS = "http://127.0.0.1:8000/api/tipos/"
 const menuAberto = ref(false)
 const opcaoSelecionada = ref(null)
 const categorias = ref([])
-
+const router = useRouter()
 function toggleMenu() {
     menuAberto.value = !menuAberto.value
     opcaoSelecionada.value = null
@@ -25,8 +26,9 @@ const search = ref("")
 const defaultImg = "/public/imagem/usuario4.jpg"
 const preview = ref(null)
 
-function toggleUsuario() { showUsuario.value = !showUsuario.value }
-function toggleCompra() { showCompra.value = !showCompra.value }
+function irParaHome() {
+    router.push('/') // redireciona direto para a home
+} function toggleCompra() { showCompra.value = !showCompra.value }
 function togglePesquisa() { showPesquisa.value = !showPesquisa.value }
 
 function onFileChange(event) {
@@ -123,19 +125,8 @@ onMounted(fetchCategoriasETipos)
 
             <div class="icons-menu">
                 <i class="fa-solid fa-magnifying-glass" @click="togglePesquisa"></i>
-                <i class="fa-solid fa-user" @click="toggleUsuario"></i>
+                <i class="fa-solid fa-user" @click="irParaHome"></i>
                 <i class="fa-solid fa-bag-shopping" @click="toggleCompra"></i>
-            </div>
-        </div>
-        <!-- Modal Usuário -->
-        <div class="overlay" :class="{ show: showUsuario }" @click.self="toggleUsuario">
-            <div class="side-modal" :class="{ show: showUsuario }">
-                <button @click="toggleUsuario"><i class="fa-solid fa-xmark"></i></button>
-                <div class="imagem-user"></div>
-                <div class="perfil-container">
-                    <img :src="preview || defaultImg" alt="Foto de perfil" class="perfil-img" />
-                    <input type="file" @change="onFileChange" accept="image/*" />
-                </div>
             </div>
         </div>
 

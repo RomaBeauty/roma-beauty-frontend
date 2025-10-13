@@ -2,47 +2,56 @@
   <div class="pagina-login">
     <div class="cadastro">
       <div class="titulo-cadastro">Login</div>
-
       <div class="infos-cadastro">
         <div class="input-box">
           <input type="text" v-model="user.email" id="email" class="input-cadastro" required />
           <label for="email" class="label">Email</label>
-          <div class="icon">
-            <i class="fa-solid fa-user"></i>
-          </div>
+          <div class="icon"><i class="fa-solid fa-user"></i></div>
         </div>
 
         <div class="input-box">
           <input type="password" v-model="user.password" id="senha" class="input-cadastro" required />
           <label for="senha" class="label">Senha</label>
-          <div class="icon">
-            <i class="fa-solid fa-lock"></i>
-          </div>
+          <div class="icon"><i class="fa-solid fa-lock"></i></div>
+        </div>
+
+        <button class="botao-acesso" @click="fazerLogin">Acessar</button>
+
+        <div class="botao-login">
+          Ainda não tem uma conta?
+          <router-link to="/cadastro">Criar</router-link>
         </div>
       </div>
-
-      <button class="botao-acesso" @click="autenticacaoStore.login(user)">Acessar</button>
-
-      <div class="botao-login">
-        Ainda não tem uma conta?
-        <router-link to="/cadastro">Criar</router-link>
-      </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { useAutenticacaoStore } from '@/stores/autenticacao'
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAutenticacaoStore } from '@/stores/autenticacao';
+import { useToastStore } from '@/stores/toast';
 
+const router = useRouter();
+const toastStore = useToastStore();
 const autenticacaoStore = useAutenticacaoStore();
 
 const user = reactive({
   email: '',
   password: ''
 });
+
+async function fazerLogin() {
+  if (!user.email || !user.password) {
+    toastStore.notify("Preencha todos os campos!", "error");
+    return;
+  }
+  await autenticacaoStore.login(user, router); // envia pro back e vai pra /home
+}
 </script>
+
+
+
 
 <style scoped>
 * {

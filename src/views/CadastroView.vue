@@ -1,80 +1,75 @@
 <template>
     <div class="pagina-login">
-        <div class="cadastro">
-            <div class="titulo-cadastro">Cadastrar-se</div>
-            <div class="infos-cadastro">
-
-                <div class="input-box">
-                    <input v-model="first_name" type="text" id="nome" class="input-cadastro" required />
-                    <label for="nome" class="label">Nome</label>
-                    <div class="icon"><i class="fa-solid fa-user"></i></div>
-                </div>
-
-                <div class="input-box">
-                    <input v-model="last_name" type="text" id="sobrenome" class="input-cadastro" required />
-                    <label for="sobrenome" class="label">Sobrenome</label>
-                    <div class="icon"><i class="fa-solid fa-user"></i></div>
-                </div>
-
-                <div class="input-box">
-                    <input v-model="user.email" type="email" id="email" class="input-cadastro" required />
-                    <label for="email" class="label">E-mail</label>
-                    <div class="icon"><i class="fa-solid fa-envelope"></i></div>
-                </div>
-
-                <div class="input-box">
-                    <input v-model="user.password" type="password" id="senha" class="input-cadastro" required />
-                    <label for="senha" class="label">Senha</label>
-                    <div class="icon"><i class="fa-solid fa-lock"></i></div>
-                </div>
-
-                <div class="input-box">
-                    <input v-model="confirmarSenha" type="password" id="confirmarSenha" class="input-cadastro"
-                        required />
-                    <label for="confirmarSenha" class="label">Confirmação de senha</label>
-                    <div class="icon"><i class="fa-solid fa-lock"></i></div>
-                </div>
-
-                <div class="input-box">
-                    <input v-model="user.telefone" type="tel" id="telefone" class="input-cadastro" required />
-                    <label for="telefone" class="label">Telefone</label>
-                    <div class="icon"><i class="fa-solid fa-phone"></i></div>
-                </div>
-
-                <button class="botao-acesso" @click="validarCadastro">Acessar</button>
-            </div>
+      <div class="cadastro">
+        <div class="titulo-cadastro">Cadastrar-se</div>
+        <div class="infos-cadastro">
+  
+          <div class="input-box">
+            <input v-model="first_name" type="text" id="nome" class="input-cadastro" required />
+            <label for="nome" class="label">Nome</label>
+            <div class="icon"><i class="fa-solid fa-user"></i></div>
+          </div>
+  
+          <div class="input-box">
+            <input v-model="last_name" type="text" id="sobrenome" class="input-cadastro" required />
+            <label for="sobrenome" class="label">Sobrenome</label>
+            <div class="icon"><i class="fa-solid fa-user"></i></div>
+          </div>
+  
+          <div class="input-box">
+            <input v-model="user.email" type="email" id="email" class="input-cadastro" required />
+            <label for="email" class="label">E-mail</label>
+            <div class="icon"><i class="fa-solid fa-envelope"></i></div>
+          </div>
+  
+          <div class="input-box">
+            <input v-model="user.password" type="password" id="senha" class="input-cadastro" required />
+            <label for="senha" class="label">Senha</label>
+            <div class="icon"><i class="fa-solid fa-lock"></i></div>
+          </div>
+  
+          <div class="input-box">
+            <input v-model="confirmarSenha" type="password" id="confirmarSenha" class="input-cadastro" required />
+            <label for="confirmarSenha" class="label">Confirmação de senha</label>
+            <div class="icon"><i class="fa-solid fa-lock"></i></div>
+          </div>
+  
+          <button class="botao-acesso" @click="validarCadastro">Acessar</button>
         </div>
+      </div>
     </div>
-</template>
-
-<script setup>
-import { ref, reactive } from 'vue'
-import { useAutenticacaoStore } from '@/stores/autenticacao';
-import { useToastStore } from '@/stores/toast';
-
-const first_name = ref('');
-const last_name = ref('');
-const confirmarSenha = ref('');
-const autenticacaoStore = useAutenticacaoStore();
-const toastStore = useToastStore();
-
-const user = reactive({
+  </template>
+  
+  <script setup>
+  import { ref, reactive } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useAutenticacaoStore } from '@/stores/autenticacao';
+  import { useToastStore } from '@/stores/toast';
+  
+  const router = useRouter();
+  const toastStore = useToastStore();
+  const autenticacaoStore = useAutenticacaoStore();
+  
+  const first_name = ref('');
+  const last_name = ref('');
+  const confirmarSenha = ref('');
+  const user = reactive({
     name: '',
     email: '',
-    password: '',
-    telefone: '',
-});
+    password: ''
+  });
+  
+  async function validarCadastro() {
+    if (user.password !== confirmarSenha.value) {
+      toastStore.notify("As senhas não coincidem!", "error");
+      return;
+    }
+    user.name = first_name.value + " " + last_name.value;
+    await autenticacaoStore.cadastro(user, router); // envia pro back e vai pra /home
+  }
+  </script>
 
-function validarCadastro() {
-    if (user.password == confirmarSenha.value) {
-        user.name = first_name.value + " " + last_name.value;
-        autenticacaoStore.cadastro(user);
-    }
-    else {
-        toastStore.notify("As senhas não coincidem!", "error");
-    }
-}
-</script>
+  
 
 <style scoped>
 * {
