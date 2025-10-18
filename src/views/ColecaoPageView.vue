@@ -73,6 +73,7 @@ function goToProduto(produtoId) {
     <div v-if="loading" style="padding:24px">Carregando produtos...</div>
     <div v-if="error" style="color:tomato; padding:24px">Erro ao carregar produtos</div>
 
+    <!-- 🔹 Cards dos produtos -->
     <div class="card-container" v-else>
       <div
         class="card"
@@ -81,7 +82,6 @@ function goToProduto(produtoId) {
         @click="goToProduto(produto.id)"
       >
         <div class="informacoes">
-          <!-- 🔹 Impede clique de subir -->
           <div class="colecao" @click.stop>
             <h2>
               <router-link :to="`/colecoes/${produto.colecao?.id}`" @click.stop>
@@ -114,18 +114,35 @@ function goToProduto(produtoId) {
             <div class="numero-valor">{{ fmtPrice(produto.preco) }}</div>
           </div>
 
-          <!-- 🔹 Impede clique do botão de navegar -->
           <div class="botao-card">
             <button @click.stop="addToCart(produto)">Adicionar à sacola</button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- 🔹 Imagem da coleção normal (fora dos cards) -->
+    <div v-if="colecao?.imagem_mostruario" class="colecao-imagem-normal">
+      <img :src="colecao.imagem_mostruario" :alt="colecao.nome" />
+    </div>
   </div>
 </template>
 
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:wght@400;700;900&family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700;900&family=Poppins:wght@400;500;600;700&family=Work+Sans:wght@400;600;700&display=swap');
+.colecao-imagem-normal {
+  margin-top: -400px;
+  display: flex;
+  justify-content: center;
+}
+
+.colecao-imagem-normal img {
+  width: 800px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
+}
 
 .escrita-valor {
   font-size: 1.1rem;
