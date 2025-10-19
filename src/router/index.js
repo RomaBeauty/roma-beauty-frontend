@@ -6,6 +6,7 @@ import EspecificacaoView from '../views/EspecificacaoView.vue'
 import CompraView from '../views/CompraView.vue'
 import ColecaoPageView from '@/views/ColecaoPageView.vue'
 import SacolaView from '@/views/SacolaView.vue'
+import FavoritoView from '@/views/FavoritoView.vue'
 
 
 const router = createRouter({
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/sacola',
       name: 'Sacola',
       component: SacolaView
+    },
+    {
+      path: '/favorito',
+      name: 'Favorito',
+      component: FavoritoView
     }
   ],
 })

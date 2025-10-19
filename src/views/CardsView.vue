@@ -44,7 +44,6 @@ async function fetchTipos() {
 // 🧩 Ler o tipo da URL e achar o nome
 function loadTipoFromURL() {
   selectedTypeId.value = Number(route.query.tipo)
-
   if (tipos.value.length > 0 && selectedTypeId.value) {
     const tipoObj = tipos.value.find(t => t.id === selectedTypeId.value)
     selectedTypeName.value = tipoObj ? tipoObj.nome : ""
@@ -60,7 +59,8 @@ watch(() => route.query, loadTipoFromURL, { immediate: true })
 onMounted(async () => {
   await fetchTipos()
   loadTipoFromURL()
-  fetchProducts()
+  await fetchProducts()
+  await carregarFavoritos()
 })
 
 // 🔍 Filtra produtos pelo tipo selecionado
@@ -81,7 +81,7 @@ function fmtPrice(value) {
   })
 }
 
-// 🛍️ Adicionar ao carrinho (backend + localStorage)
+// 🛍️ Adicionar à sacola (backend + localStorage)
 async function addToCart(produto) {
   try {
     const token = localStorage.getItem('access_token')
@@ -90,58 +90,32 @@ async function addToCart(produto) {
       return
     }
 
-    // 🔹 Busca todos os itens da sacola (garante que seja um array)
     const res = await axios.get(`${API_BASE}/sacola/`, {
       headers: { Authorization: `Bearer ${token}` }
     })
-
     const sacolaBackend = Array.isArray(res.data)
       ? res.data
       : Array.isArray(res.data.results)
         ? res.data.results
         : []
 
-
-    // 🔹 Procura se o produto já está na sacola
     const itemExistente = sacolaBackend.find(item => item.produto?.id === produto.id)
 
-
     if (itemExistente) {
-      // Atualiza a quantidade do item existente
       await axios.patch(
         `${API_BASE}/sacola/${itemExistente.id}/`,
         { quantidade: itemExistente.quantidade + 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-
       alert(`${produto.nome} atualizado na sacola!`)
     } else {
-      // Cria um novo item na sacola
       await axios.post(
         `${API_BASE}/sacola/`,
-        { produto_id: produto.id, quantidade: 1 }, // ✅ produto_id, não produto
+        { produto_id: produto.id, quantidade: 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-
-
       alert(`${produto.nome} adicionado à sacola!`)
     }
-
-    // 🔹 Atualiza também o localStorage para feedback rápido
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]')
-    const localItem = cart.find(i => i.id === produto.id)
-    if (localItem) {
-      localItem.quantidade += 1
-    } else {
-      cart.push({
-        id: produto.id,
-        nome: produto.nome,
-        preco: produto.preco,
-        imagem: produto.imagem_produto,
-        quantidade: 1
-      })
-    }
-    localStorage.setItem('cart', JSON.stringify(cart))
 
   } catch (err) {
     console.error("Erro ao adicionar à sacola:", err.response?.data || err)
@@ -149,16 +123,76 @@ async function addToCart(produto) {
   }
 }
 
+// ❤️ Favoritar / desfavoritar
+async function toggleFavorito(produto) {
+  console.log("ID do produto:", produto.id)
 
+  try {
+    const token = localStorage.getItem('access_token')
+    if (!token) {
+      alert('Você precisa estar logado para adicionar aos favoritos')
+      return
+    }
 
+    // 🔹 Verifica se já está favoritado
+    const res = await axios.get(`${API_BASE}/favoritos/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const favoritos = Array.isArray(res.data.results) ? res.data.results : res.data
+    const jaFavoritado = favoritos.find(f => f.produto?.id === produto.id)
+
+    if (jaFavoritado) {
+      // 🧹 Remove do backend
+      await axios.delete(`${API_BASE}/favoritos/${jaFavoritado.id}/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      produto.isFavorito = false
+      alert(`${produto.nome} removido dos favoritos`)
+    } else {
+      // 💾 Adiciona ao backend
+      await axios.post(
+        `${API_BASE}/favoritos/`,
+        { produto_id: produto.id },  // <- aqui estava errado
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+      produto.isFavorito = true
+      alert(`${produto.nome} adicionado aos favoritos`)
+    }
+
+    await carregarFavoritos()
+
+  } catch (err) {
+    console.error("Erro ao gerenciar favorito:", err.response?.data || err)
+    alert("❌ Não foi possível atualizar o favorito.")
+  }
+}
+
+// ❤️ Carregar status dos favoritos
+async function carregarFavoritos() {
+  const token = localStorage.getItem('access_token')
+  if (!token) return
+
+  try {
+    const res = await axios.get(`${API_BASE}/favoritos/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const favoritos = Array.isArray(res.data.results) ? res.data.results : res.data
+
+    products.value = products.value.map(p => ({
+      ...p,
+      isFavorito: favoritos.some(f => f.produto?.id === p.id)
+    }))
+  } catch (err) {
+    console.error("Erro ao buscar favoritos:", err)
+  }
+}
 
 // 🔗 Ir para página do produto
 function goToProduto(produtoId) {
   router.push({ path: '/especificacao', query: { id: produtoId } })
 }
 </script>
-
-
 
 <template>
   <div>
@@ -172,18 +206,19 @@ function goToProduto(produtoId) {
     <div v-if="error" style="color:tomato; padding:24px">Erro ao carregar produtos</div>
 
     <div class="card-container" v-else>
-      <div class="card" v-for="produto in filteredProducts" :key="produto.id" @click="goToProduto(produto.id)">
+      <div class="card" v-for="produto in filteredProducts" :key="produto.id">
         <div class="informacoes">
-          <div class="colecao" @click.stop>
+          <div class="colecao">
             <h2>
               <router-link :to="`/colecao/${produto.colecao.id}`" @click.stop>
                 {{ produto.colecao.nome }}
               </router-link>
             </h2>
-            <i class="fa-regular fa-heart"></i>
+            <img :src="produto.isFavorito ? '/heart-full.png' : '/heart-empty.png'" alt="Favorito" class="icon-favorito"
+              @click.stop="toggleFavorito(produto)" />
           </div>
 
-          <div class="imagem-card">
+          <div class="imagem-card" @click="goToProduto(produto.id)">
             <img :src="produto.imagem_produto || produto.colecao?.imagem_mostruario || '/fallback.png'" alt="Normal"
               class="normal" />
             <img
@@ -202,7 +237,7 @@ function goToProduto(produtoId) {
           </div>
 
           <div class="botao-card">
-            <button @click.stop="addToCart(produto)">Adicionar a sacola</button>
+            <button @click.stop="addToCart(produto)">Adicionar à sacola</button>
           </div>
         </div>
       </div>
@@ -210,10 +245,33 @@ function goToProduto(produtoId) {
   </div>
 </template>
 
-
-
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+.colecao {
+  display: flex;
+  align-items: center;
+  gap: 108px;
+  /* espaço entre o nome e o coração */
+}
+
+.colecao h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.icon-favorito {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.icon-favorito:hover {
+  transform: scale(1.15);
+}
+
 
 .banner1 img {
   width: 145vh;
