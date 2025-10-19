@@ -8,13 +8,14 @@ const route = useRoute();
 const produto = ref<any>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
-const API_BASE: string =  "http://127.0.0.1:8000/api";
+// @ts-ignore
+const API_BASE: string = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
-// Função para buscar o produto pelo ID da URL
+// Buscar o produto pelo ID
 async function fetchProduto() {
   loading.value = true;
   try {
-    const id = route.query.id as string; // ✅ pega o id da query
+    const id = route.query.id as string;
     if (!id) throw new Error("ID do produto não fornecido");
     const res = await axios.get(`${API_BASE}/produtos/${id}/`);
     produto.value = res.data;
@@ -26,14 +27,55 @@ async function fetchProduto() {
   }
 }
 
+// Função de adicionar à sacola (igual página dos cards)
+async function addToCart(produto: any) {
+  try {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      alert('Você precisa estar logado para adicionar à sacola');
+      return;
+    }
 
-onMounted(fetchProduto);
+    const res = await axios.get(`${API_BASE}/sacola/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const sacolaBackend = Array.isArray(res.data)
+      ? res.data
+      : Array.isArray(res.data.results)
+        ? res.data.results
+        : [];
+
+    const itemExistente = sacolaBackend.find(item => item.produto?.id === produto.id);
+
+    if (itemExistente) {
+      await axios.patch(
+        `${API_BASE}/sacola/${itemExistente.id}/`,
+        { quantidade: itemExistente.quantidade + 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`${produto.nome} atualizado na sacola!`);
+    } else {
+      await axios.post(
+        `${API_BASE}/sacola/`,
+        { produto_id: produto.id, quantidade: 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`${produto.nome} adicionado à sacola!`);
+    }
+  } catch (err) {
+    console.error("Erro ao adicionar à sacola:", err.response?.data || err);
+    alert("❌ Não foi possível adicionar o produto à sacola.");
+  }
+}
 
 // Controle dos accordions
 const activeSection = ref<string | null>(null);
 const toggleSection = (section: string) => {
   activeSection.value = activeSection.value === section ? null : section;
 };
+
+onMounted(fetchProduto);
 </script>
 
 <template>
@@ -73,19 +115,15 @@ const toggleSection = (section: string) => {
       </div>
 
       <div class="botao-compra">
-        <button>Adicionar à sacola</button>
+        <button @click="addToCart(produto)">Adicionar à sacola</button>
       </div>
 
-      <!-- ACCORDION COMPLETO -->
+      <!-- ACCORDION -->
       <div class="accordion">
         <div class="accordion-item" @click="toggleSection('composicao')">
           <div class="accordion-title">
             <span>Composição</span>
-            <i
-              :class="activeSection === 'composicao'
-                ? 'fa-solid fa-chevron-up'
-                : 'fa-solid fa-chevron-down'"
-            ></i>
+            <i :class="activeSection === 'composicao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
           </div>
           <div class="accordion-content" v-if="activeSection === 'composicao'">
             <p>{{ produto.composicao || 'Informações de composição não disponíveis.' }}</p>
@@ -95,11 +133,7 @@ const toggleSection = (section: string) => {
         <div class="accordion-item" @click="toggleSection('modo')">
           <div class="accordion-title">
             <span>Modo de Uso</span>
-            <i
-              :class="activeSection === 'modo'
-                ? 'fa-solid fa-chevron-up'
-                : 'fa-solid fa-chevron-down'"
-            ></i>
+            <i :class="activeSection === 'modo' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
           </div>
           <div class="accordion-content" v-if="activeSection === 'modo'">
             <p>{{ produto.modo_uso || 'Modo de uso não informado.' }}</p>
@@ -109,11 +143,7 @@ const toggleSection = (section: string) => {
         <div class="accordion-item" @click="toggleSection('indicacao')">
           <div class="accordion-title">
             <span>Indicação</span>
-            <i
-              :class="activeSection === 'indicacao'
-                ? 'fa-solid fa-chevron-up'
-                : 'fa-solid fa-chevron-down'"
-            ></i>
+            <i :class="activeSection === 'indicacao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
           </div>
           <div class="accordion-content" v-if="activeSection === 'indicacao'">
             <p>{{ produto.indicacao || 'Indicação não informada.' }}</p>
@@ -122,7 +152,7 @@ const toggleSection = (section: string) => {
       </div>
     </div>
 
-    <!-- BANNER DO MOSTRUÁRIO OU DA COLEÇÃO -->
+    <!-- BANNER -->
     <div class="banner">
       <img
         :src="produto.colecao?.imagem_mostruario || produto.imagem_amostra || '/fallback.png'"
@@ -131,6 +161,7 @@ const toggleSection = (section: string) => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
