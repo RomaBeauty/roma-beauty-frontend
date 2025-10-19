@@ -8,6 +8,7 @@ const route = useRoute();
 const produto = ref<any>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
+const isFavorito = ref(false);
 // @ts-ignore
 const API_BASE: string = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
@@ -19,11 +20,65 @@ async function fetchProduto() {
     if (!id) throw new Error("ID do produto não fornecido");
     const res = await axios.get(`${API_BASE}/produtos/${id}/`);
     produto.value = res.data;
+
+    await carregarFavorito();
   } catch (err: any) {
     console.error(err);
     error.value = "Erro ao carregar o produto";
   } finally {
     loading.value = false;
+  }
+}
+
+// ❤️ Carregar status do favorito do produto
+async function carregarFavorito() {
+  const token = localStorage.getItem('access_token');
+  if (!token) return;
+
+  try {
+    const res = await axios.get(`${API_BASE}/favoritos/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const favoritos = Array.isArray(res.data.results) ? res.data.results : res.data;
+    isFavorito.value = favoritos.some(f => f.produto?.id === produto.value.id);
+  } catch (err) {
+    console.error("Erro ao buscar favoritos:", err);
+  }
+}
+
+// ❤️ Favoritar / desfavoritar
+async function toggleFavorito() {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    alert('Você precisa estar logado para adicionar aos favoritos');
+    return;
+  }
+
+  try {
+    const res = await axios.get(`${API_BASE}/favoritos/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const favoritos = Array.isArray(res.data.results) ? res.data.results : res.data;
+    const jaFavoritado = favoritos.find(f => f.produto?.id === produto.value.id);
+
+    if (jaFavoritado) {
+      await axios.delete(`${API_BASE}/favoritos/${jaFavoritado.id}/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      isFavorito.value = false;
+      alert(`${produto.value.nome} removido dos favoritos`);
+    } else {
+      await axios.post(`${API_BASE}/favoritos/`,
+        { produto_id: produto.value.id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      isFavorito.value = true;
+      alert(`${produto.value.nome} adicionado aos favoritos`);
+    }
+
+  } catch (err) {
+    console.error("Erro ao gerenciar favorito:", err);
+    alert("❌ Não foi possível atualizar o favorito.");
   }
 }
 
@@ -81,31 +136,23 @@ onMounted(fetchProduto);
 <template>
   <div v-if="loading" class="carregando">Carregando produto...</div>
   <div v-else-if="error" class="erro">{{ error }}</div>
-  
+
   <div v-else class="container">
     <!-- IMAGEM PRINCIPAL -->
     <div class="imagens-container">
-      <img
-        :src="produto.imagem_produto || produto.imagem_amostra || '/fallback.png'"
-        alt="imagem do produto"
-      />
+      <img :src="produto.imagem_produto || produto.imagem_amostra || '/fallback.png'" alt="imagem do produto" />
     </div>
 
     <!-- BLOCO DE ESPECIFICAÇÕES -->
     <div class="expecificacoes-container">
-      <div class="icone-favorito"><i class="fa-regular fa-heart"></i></div>
-
-      <div class="expecificacao">
-        {{ produto.nome || 'Nome do produto' }}
+      <div class="icone-favorito" @click="toggleFavorito">
+        <img :src="isFavorito ? '/heart-full.png' : '/heart-empty.png'" alt="favorito" class="heart-icon" />
       </div>
 
-      <div class="expecificacao-menor">
-        {{ produto.category?.nome || produto.category || 'Categoria' }}
-      </div>
 
-      <div class="detalhes">
-        {{ produto.descricao || produto.colecao?.descricao || 'Descrição do produto.' }}
-      </div>
+      <div class="expecificacao">{{ produto.nome || 'Nome do produto' }}</div>
+      <div class="expecificacao-menor">{{ produto.category?.nome || produto.category || 'Categoria' }}</div>
+      <div class="detalhes">{{ produto.descricao || produto.colecao?.descricao || 'Descrição do produto.' }}</div>
 
       <div class="valor">
         <span class="escrita-valor">R$</span>
@@ -154,17 +201,25 @@ onMounted(fetchProduto);
 
     <!-- BANNER -->
     <div class="banner">
-      <img
-        :src="produto.colecao?.imagem_mostruario || produto.imagem_amostra || '/fallback.png'"
-        alt="banner da coleção"
-      />
+      <img :src="produto.colecao?.imagem_mostruario || produto.imagem_amostra || '/fallback.png'"
+        alt="banner da coleção" />
     </div>
   </div>
 </template>
 
 
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+.heart-icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-right: 20px;
+}
+
 
 .categorias a {
   text-decoration: none;
@@ -1051,6 +1106,7 @@ onMounted(fetchProduto);
   height: auto;
   display: block;
 }
+
 /* layout completo original */
 .container {
   display: flex;
