@@ -4,13 +4,25 @@
       <div class="titulo-cadastro">Login</div>
       <div class="infos-cadastro">
         <div class="input-box">
-          <input type="text" v-model="user.email" id="email" class="input-cadastro" required />
+          <input
+            type="text"
+            v-model="user.email"
+            id="email"
+            class="input-cadastro"
+            required
+          />
           <label for="email" class="label">Email</label>
           <div class="icon"><i class="fa-solid fa-user"></i></div>
         </div>
 
         <div class="input-box">
-          <input type="password" v-model="user.password" id="senha" class="input-cadastro" required />
+          <input
+            type="password"
+            v-model="user.password"
+            id="senha"
+            class="input-cadastro"
+            required
+          />
           <label for="senha" class="label">Senha</label>
           <div class="icon"><i class="fa-solid fa-lock"></i></div>
         </div>
@@ -29,29 +41,42 @@
 <script setup>
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAutenticacaoStore } from '@/stores/autenticacao';
-import { useToastStore } from '@/stores/toast';
+import axios from 'axios';
 
 const router = useRouter();
-const toastStore = useToastStore();
-const autenticacaoStore = useAutenticacaoStore();
 
 const user = reactive({
   email: '',
   password: ''
 });
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+
 async function fazerLogin() {
   if (!user.email || !user.password) {
-    toastStore.notify("Preencha todos os campos!", "error");
+    alert("Preencha todos os campos!");
     return;
   }
-  await autenticacaoStore.login(user, router); // envia pro back e vai pra /home
+
+  try {
+    const res = await axios.post(`${API_BASE}/token/`, {
+      email: user.email, // ou 'email' se seu backend usa email
+      password: user.password
+    });
+
+    // SALVA O TOKEN NO localStorage
+    localStorage.setItem('access_token', res.data.access);
+    localStorage.setItem('refresh_token', res.data.refresh);
+
+    alert("Login realizado com sucesso!");
+    router.push('/home'); // redireciona para a home ou página desejada
+
+  } catch (err) {
+    console.error(err);
+    alert("Email ou senha incorretos");
+  }
 }
 </script>
-
-
-
 
 <style scoped>
 * {
@@ -171,13 +196,12 @@ body {
   margin-left: 10vh;
 }
 
-
 .botao-acesso:hover {
   background-color: #feb7d9c1;
   color: #ffffff;
 }
 
-/* Botão de cadastro*/
+/* Botão de cadastro */
 .botao-login {
   margin-top: 20px;
   text-align: center;
@@ -186,7 +210,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px; 
+  gap: 8px;
 }
 
 .botao-login a {

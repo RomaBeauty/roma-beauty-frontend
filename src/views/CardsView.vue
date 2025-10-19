@@ -81,24 +81,83 @@ function fmtPrice(value) {
   })
 }
 
-// 🛍️ Adicionar ao carrinho
-function addToCart(produto) {
-  const cart = JSON.parse(localStorage.getItem('cart') || '[]')
-  cart.push({
-    id: produto.id,
-    nome: produto.nome,
-    preco: produto.preco,
-    imagem: produto.imagem_produto
-  })
-  localStorage.setItem('cart', JSON.stringify(cart))
-  alert(`${produto.nome} adicionado à sacola`)
+// 🛍️ Adicionar ao carrinho (backend + localStorage)
+async function addToCart(produto) {
+  try {
+    const token = localStorage.getItem('access_token')
+    if (!token) {
+      alert('Você precisa estar logado para adicionar à sacola')
+      return
+    }
+
+    // 🔹 Busca todos os itens da sacola (garante que seja um array)
+    const res = await axios.get(`${API_BASE}/sacola/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+
+    const sacolaBackend = Array.isArray(res.data)
+      ? res.data
+      : Array.isArray(res.data.results)
+        ? res.data.results
+        : []
+
+
+    // 🔹 Procura se o produto já está na sacola
+    const itemExistente = sacolaBackend.find(item => item.produto?.id === produto.id)
+
+
+    if (itemExistente) {
+      // Atualiza a quantidade do item existente
+      await axios.patch(
+        `${API_BASE}/sacola/${itemExistente.id}/`,
+        { quantidade: itemExistente.quantidade + 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+      alert(`${produto.nome} atualizado na sacola!`)
+    } else {
+      // Cria um novo item na sacola
+      await axios.post(
+        `${API_BASE}/sacola/`,
+        { produto_id: produto.id, quantidade: 1 }, // ✅ produto_id, não produto
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+
+      alert(`${produto.nome} adicionado à sacola!`)
+    }
+
+    // 🔹 Atualiza também o localStorage para feedback rápido
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+    const localItem = cart.find(i => i.id === produto.id)
+    if (localItem) {
+      localItem.quantidade += 1
+    } else {
+      cart.push({
+        id: produto.id,
+        nome: produto.nome,
+        preco: produto.preco,
+        imagem: produto.imagem_produto,
+        quantidade: 1
+      })
+    }
+    localStorage.setItem('cart', JSON.stringify(cart))
+
+  } catch (err) {
+    console.error("Erro ao adicionar à sacola:", err.response?.data || err)
+    alert("❌ Não foi possível adicionar o produto à sacola.")
+  }
 }
+
+
+
 
 // 🔗 Ir para página do produto
 function goToProduto(produtoId) {
   router.push({ path: '/especificacao', query: { id: produtoId } })
 }
 </script>
+
 
 
 <template>
@@ -113,12 +172,7 @@ function goToProduto(produtoId) {
     <div v-if="error" style="color:tomato; padding:24px">Erro ao carregar produtos</div>
 
     <div class="card-container" v-else>
-      <div
-        class="card"
-        v-for="produto in filteredProducts"
-        :key="produto.id"
-        @click="goToProduto(produto.id)"
-      >
+      <div class="card" v-for="produto in filteredProducts" :key="produto.id" @click="goToProduto(produto.id)">
         <div class="informacoes">
           <div class="colecao" @click.stop>
             <h2>
@@ -130,16 +184,11 @@ function goToProduto(produtoId) {
           </div>
 
           <div class="imagem-card">
-            <img
-              :src="produto.imagem_produto || produto.colecao?.imagem_mostruario || '/fallback.png'"
-              alt="Normal"
-              class="normal"
-            />
+            <img :src="produto.imagem_produto || produto.colecao?.imagem_mostruario || '/fallback.png'" alt="Normal"
+              class="normal" />
             <img
               :src="produto.imagem_amostra || produto.colecao?.imagem_mostruario || produto.imagem_produto || '/fallback.png'"
-              alt="Molhado"
-              class="hover"
-            />
+              alt="Molhado" class="hover" />
           </div>
 
           <div class="titulo-card">{{ produto.nome }}</div>

@@ -5,6 +5,7 @@ import CardsView from '../views/CardsView.vue'
 import EspecificacaoView from '../views/EspecificacaoView.vue'
 import CompraView from '../views/CompraView.vue'
 import ColecaoPageView from '@/views/ColecaoPageView.vue'
+import SacolaView from '@/views/SacolaView.vue'
 
 
 const router = createRouter({
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/colecao/:id',
       name: 'Colecao',
       component: ColecaoPageView
+    },
+    {
+      path: '/sacola',
+      name: 'Sacola',
+      component: SacolaView
     }
   ],
 })

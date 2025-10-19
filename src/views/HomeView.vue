@@ -10,6 +10,7 @@ const menuAberto = ref(false)
 const opcaoSelecionada = ref(null)
 const categorias = ref([])
 const router = useRouter()
+
 function toggleMenu() {
     menuAberto.value = !menuAberto.value
     opcaoSelecionada.value = null
