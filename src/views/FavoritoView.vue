@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import Menu from '@/components/Menu.vue'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
 const favoritos = ref([])
@@ -113,6 +114,9 @@ onMounted(fetchFavoritos)
 </script>
 
 <template>
+   <Menu/>
+
+<div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="favoritos-page">
     <h1>MEUS FAVORITOS ❤️</h1>
     <button class="remover-todos" @click="removerTodosFavoritos">Remover todos</button>

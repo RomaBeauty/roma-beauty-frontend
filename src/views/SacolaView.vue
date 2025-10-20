@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import Menu from '@/components/Menu.vue'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
 const sacola = ref([])
@@ -70,6 +71,9 @@ onMounted(fetchSacola)
 </script>
 
 <template>
+   <Menu/>
+
+<div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="sacola-container">
     <h1>Sacola de Compras</h1>
 

@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
+import Menu from '@/components/Menu.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -195,6 +196,9 @@ function goToProduto(produtoId) {
 </script>
 
 <template>
+   <Menu/>
+
+<div v-if="loading" class="carregando">Carregando produto...</div>
   <div>
     <div class="titulo">
       <h1>

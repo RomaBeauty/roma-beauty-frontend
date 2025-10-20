@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+import Menu from '@/components/Menu.vue'
 
 const route = useRoute();
 
@@ -134,6 +135,8 @@ onMounted(fetchProduto);
 </script>
 
 <template>
+  <Menu/>
+
   <div v-if="loading" class="carregando">Carregando produto...</div>
   <div v-else-if="error" class="erro">{{ error }}</div>
 

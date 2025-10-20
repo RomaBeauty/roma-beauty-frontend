@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
+import Menu from '@/components/Menu.vue'
 
 const route = useRoute()
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
@@ -134,6 +135,9 @@ const enviarFormulario = async () => {
 
 
 <template>
+   <Menu/>
+
+<div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="container">
     <!-- lado esquerdo: formulário -->
     <div class="lado1">

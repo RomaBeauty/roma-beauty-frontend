@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import Menu from '@/components/Menu.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -142,6 +143,9 @@ onMounted(() => fetchColecao())
 
 
 <template>
+   <Menu/>
+
+<div v-if="loading" class="carregando">Carregando produto...</div>
   <div>
     <div class="titulo">
       <h1>{{ colecao?.nome || 'Coleção' }}</h1>
