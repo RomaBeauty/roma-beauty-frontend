@@ -1,16 +1,33 @@
 <script setup>
 import { ref, onMounted } from "vue"
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router"
 import axios from "axios"
 
+// ---- Endpoints ----
 const API_URL_CATEGORIAS = "http://127.0.0.1:8000/api/categories/"
 const API_URL_TIPOS = "http://127.0.0.1:8000/api/tipos/"
+const API_URL_PRODUTOS = "http://127.0.0.1:8000/api/produtos/"
+const API_URL_SACOLA = "http://127.0.0.1:8000/api/sacola/"
+const API_URL_FAVORITOS = "http://127.0.0.1:8000/api/favoritos/"
 
+// ---- Estado reativo ----
 const menuAberto = ref(false)
 const opcaoSelecionada = ref(null)
 const categorias = ref([])
+const produtosAleatoriosTopo = ref([])
+const produtosAleatoriosBaixo = ref([])
+const colecoesAleatorias = ref([])  // coleções
+
+const showUsuario = ref(false)
+const showCompra = ref(false)
+const showPesquisa = ref(false)
+const search = ref("")
+const preview = ref(null)
+const defaultImg = "/public/imagem/usuario4.jpg"
+
 const router = useRouter()
 
+// ---- Menu ----
 function toggleMenu() {
     menuAberto.value = !menuAberto.value
     opcaoSelecionada.value = null
@@ -20,56 +37,222 @@ function selecionarOpcao(cat) {
     opcaoSelecionada.value = cat
 }
 
-const showUsuario = ref(false)
-const showCompra = ref(false)
-const showPesquisa = ref(false)
-const search = ref("")
-const defaultImg = "/public/imagem/usuario4.jpg"
-const preview = ref(null)
-
+// ---- Navegação ----
 function irParaHome() {
-    router.push('/') // redireciona direto para a home
-} function toggleCompra() { showCompra.value = !showCompra.value }
-function togglePesquisa() { showPesquisa.value = !showPesquisa.value }
+    router.push("/")
+}
+function toggleCompra() {
+    router.push("/sacola")
+}
+function togglePesquisa() {
+    router.push("/favorito")
+}
 
+// ---- Upload de imagem ----
 function onFileChange(event) {
     const file = event.target.files[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = (e) => (preview.value = e.target.result)
+    reader.onload = e => (preview.value = e.target.result)
     reader.readAsDataURL(file)
 }
 
+// ---- Pesquisa ----
 function doSearch() {
     alert(`Você pesquisou: ${search.value}`)
 }
 
-/* 🔥 Busca categorias e tipos do backend e associa */
+// ---- Buscar categorias e tipos ----
 async function fetchCategoriasETipos() {
     try {
-        // 1. Busca categorias (paginadas)
         const resCat = await axios.get(API_URL_CATEGORIAS)
         const categoriasData = resCat.data.results || resCat.data
 
-        // 2. Busca tipos
         const resTipos = await axios.get(API_URL_TIPOS)
         const tiposData = resTipos.data.results || resTipos.data
 
-        // 3. Junta tipos em suas respectivas categorias
-        const categoriasComTipos = categoriasData.map(cat => ({
+        categorias.value = categoriasData.map(cat => ({
             ...cat,
             tipos: tiposData.filter(tipo => tipo.categoria === cat.id)
         }))
-
-        categorias.value = categoriasComTipos
-        console.log("✅ Categorias + Tipos:", categoriasComTipos)
     } catch (error) {
         console.error("❌ Erro ao carregar categorias/tipos:", error)
     }
 }
 
-onMounted(fetchCategoriasETipos)
+// ---- Produtos aleatórios e coleções ----
+async function fetchProdutosAleatorios() {
+    try {
+        const res = await axios.get(API_URL_PRODUTOS)
+        const todosProdutos = res.data.results || res.data
+
+        if (!Array.isArray(todosProdutos) || todosProdutos.length === 0) {
+            produtosAleatoriosTopo.value = []
+            produtosAleatoriosBaixo.value = []
+            colecoesAleatorias.value = []
+            return
+        }
+
+        // embaralhar e dividir em duas seções
+        const shuffled = [...todosProdutos].sort(() => Math.random() - 0.5)
+        produtosAleatoriosTopo.value = shuffled.slice(0, 5)
+        produtosAleatoriosBaixo.value = shuffled.slice(5, 10)
+
+        // extrair coleções únicas
+        const colecoesUnicas = []
+        todosProdutos.forEach(p => {
+            if (p.colecao && !colecoesUnicas.some(c => c.id === p.colecao.id)) {
+                colecoesUnicas.push(p.colecao)
+            }
+        })
+        colecoesAleatorias.value = colecoesUnicas.sort(() => Math.random() - 0.5).slice(0, 5)
+
+        // carregar favoritos
+        await carregarFavoritos()
+    } catch (err) {
+        console.error("Erro ao buscar produtos:", err)
+        produtosAleatoriosTopo.value = []
+        produtosAleatoriosBaixo.value = []
+        colecoesAleatorias.value = []
+    }
+}
+
+// ---- Sacola ----
+async function adicionarSacola(produto) {
+    try {
+        const token = localStorage.getItem("access_token")
+        if (!token) {
+            alert("Você precisa estar logado para adicionar à sacola")
+            return
+        }
+
+        const res = await axios.get(API_URL_SACOLA, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+
+        const sacolaAtual = Array.isArray(res.data.results) ? res.data.results : res.data
+        const existente = sacolaAtual.find(item => item.produto?.id === produto.id)
+
+        if (existente) {
+            await axios.patch(
+                `${API_URL_SACOLA}${existente.id}/`,
+                { quantidade: existente.quantidade + 1 },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            alert(`${produto.nome} atualizado na sacola!`)
+        } else {
+            await axios.post(
+                API_URL_SACOLA,
+                { produto_id: produto.id, quantidade: 1 },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            alert(`${produto.nome} adicionado à sacola!`)
+        }
+    } catch (error) {
+        console.error("Erro ao adicionar à sacola:", error)
+        alert("❌ Erro ao adicionar à sacola.")
+    }
+}
+
+// ---- Favoritos ----
+async function toggleFavorito(produto) {
+    try {
+        const token = localStorage.getItem("access_token")
+        if (!token) {
+            alert("Você precisa estar logado para favoritar")
+            return
+        }
+
+        const res = await axios.get(API_URL_FAVORITOS, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+
+        const favoritos = Array.isArray(res.data.results) ? res.data.results : res.data
+        const jaFavorito = favoritos.find(f => f.produto?.id === produto.id)
+
+        if (jaFavorito) {
+            await axios.delete(`${API_URL_FAVORITOS}${jaFavorito.id}/`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            produto.isFavorito = false
+            alert(`${produto.nome} removido dos favoritos`)
+        } else {
+            await axios.post(
+                API_URL_FAVORITOS,
+                { produto_id: produto.id },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            produto.isFavorito = true
+            alert(`${produto.nome} adicionado aos favoritos`)
+        }
+
+        await carregarFavoritos()
+    } catch (error) {
+        console.error("Erro ao favoritar:", error)
+    }
+}
+
+// ---- Favorito com índice (reactivo) ----
+function toggleFavoritoIndexTopo(index) {
+    const produto = produtosAleatoriosTopo.value[index]
+    toggleFavorito(produto).then(() => {
+        produtosAleatoriosTopo.value[index].isFavorito = !produtosAleatoriosTopo.value[index].isFavorito
+    })
+}
+function toggleFavoritoIndexBaixo(index) {
+    const produto = produtosAleatoriosBaixo.value[index]
+    toggleFavorito(produto).then(() => {
+        produtosAleatoriosBaixo.value[index].isFavorito = !produtosAleatoriosBaixo.value[index].isFavorito
+    })
+}
+
+
+// ---- Carregar favoritos ----
+async function carregarFavoritos() {
+    const token = localStorage.getItem("access_token")
+    if (!token) return
+
+    try {
+        const res = await axios.get(API_URL_FAVORITOS, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        const favoritos = Array.isArray(res.data.results) ? res.data.results : res.data
+
+        // Atualiza produtos topo
+        produtosAleatoriosTopo.value = produtosAleatoriosTopo.value.map(p => ({
+            ...p,
+            isFavorito: favoritos.some(f => f.produto?.id === p.id)
+        }))
+
+        // Atualiza produtos baixo
+        produtosAleatoriosBaixo.value = produtosAleatoriosBaixo.value.map(p => ({
+            ...p,
+            isFavorito: favoritos.some(f => f.produto?.id === p.id)
+        }))
+
+    } catch (err) {
+        console.error("Erro ao buscar favoritos:", err)
+    }
+}
+
+
+// ---- Navegar para produto/coleção ----
+function goToProduto(produtoId) {
+    router.push({ path: "/especificacao", query: { id: produtoId } })
+}
+
+function goToColecao(colecaoNome) {
+    if (!colecaoNome) return
+    router.push({ path: "/colecoes", query: { nome: colecaoNome } })
+}
+
+// ---- Inicialização ----
+onMounted(async () => {
+    await fetchCategoriasETipos()
+    await fetchProdutosAleatorios()
+})
 </script>
+
 
 
 
@@ -111,63 +294,81 @@ onMounted(fetchCategoriasETipos)
                                 </div>
                             </transition>
                         </div>
-
-
-
-
                     </div>
                 </div>
-
             </div>
 
             <div class="nome-logo">
+                <!-- mantive o caminho que você usa -->
                 <img src="/public/imagem/logo.png" alt="">
             </div>
 
             <div class="icons-menu">
-                <i class="fa-solid fa-magnifying-glass" @click="togglePesquisa"></i>
+                <i class="fa-solid fa-heart" @click="togglePesquisa"></i>
                 <i class="fa-solid fa-user" @click="irParaHome"></i>
                 <i class="fa-solid fa-bag-shopping" @click="toggleCompra"></i>
             </div>
         </div>
 
-        <!-- Modal Compra -->
-        <div class="overlay" :class="{ show: showCompra }" @click.self="toggleCompra">
-            <div class="side-modal" :class="{ show: showCompra }">
-                <button @click="toggleCompra"><i class="fa-solid fa-xmark"></i></button>
-                <div class="linhas">
-                    <div class="linha1"></div>
-                    <div class="linha2"></div>
-                    <div class="linha3"></div>
-
-                </div>
-                <div class="linha4"></div>
-                <div class="linha5"></div>
-            </div>
+        <br />
+        <!-- Banner principal (mantive o seu arquivo original) -->
+        <div class="imagem-principal">
+            <img src="/public/imagem/imagem-principal.png" alt="">
         </div>
-
-        <!-- Modal Pesquisa -->
-        <div class="overlay" :class="{ show: showPesquisa }" @click.self="togglePesquisa">
-            <div class="side-modal" :class="{ show: showPesquisa }">
-                <button @click="togglePesquisa"><i class="fa-solid fa-xmark"></i></button>
-                <div class="search-container">
-
-                    <input v-model="search" type="text" placeholder="Pesquisar... " class="search-input" />
-                    <button @click="doSearch" class="search-btn"></button>
-                </div>
-                <h2>Sugestões</h2>
-
-            </div>
-        </div>
-        <br></br>
-        <div class="imagem-principal"> <img src="/public/imagem/imagem-principal.png" alt=""></div>
     </div>
+    <!-- ===== SEÇÃO DE PRODUTOS ALEATÓRIOS ===== -->
+    <section class="produtos-home">
+        <h1>Aqui é Tendência</h1>
+        <div class="card-container">
+            <div class="card" v-for="(produto, index) in produtosAleatoriosTopo" :key="produto.id">
+                <!-- Coleção + Favorito -->
+                <div class="colecao">
+                    <h2><router-link :to="`/colecao/${produto.colecao.id}`" @click.stop>
+                            {{ produto.colecao.nome }}
+                        </router-link>
+                    </h2>
 
+                    <img :src="produto.isFavorito ? '/heart-full.png' : '/heart-empty.png'" class="icon-favorito"
+                        @click.stop="toggleFavoritoIndexTopo(index)" />
+                </div>
+
+                <!-- Imagem do Produto -->
+                <div class="imagem-card" @click="goToProduto(produto.id)">
+                    <img :src="produto.imagem_produto || produto.colecao?.imagem_mostruario || '/fallback.png'"
+                        alt="Normal" class="normal" />
+                    <img :src="produto.imagem_amostra || produto.colecao?.imagem_mostruario || produto.imagem_produto || '/fallback.png'"
+                        alt="Hover" class="hover" />
+                </div>
+
+                <!-- Nome e descrição -->
+                <div class="titulo-card">{{ produto.nome }}</div>
+                <div class="descricao-card">{{ produto.descricao_colecao || produto.colecao?.descricao || "" }}</div>
+
+                <!-- Preço -->
+                <div class="valor-card">
+                    <div class="escrita-valor">R$</div>
+                    <div class="numero-valor">
+                        {{ produto.preco?.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2, maximumFractionDigits: 2
+                        }) || "0,00" }}
+                    </div>
+                </div>
+
+                <!-- Botão adicionar à sacola -->
+                <div class="botao-card">
+                    <button @click.stop="adicionarSacola(produto)">Adicionar à sacola</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- texto central e anuncio (mantive conforme você pediu) -->
     <div class="anuncio1">
-        <h1>Desconto Beauty</h1>
-        <p>Aproveite os descontos progressivos da Roma Beauty: quanto mais você compra, menos paga!
-            Da hidratação intensa ao cuidado capilar, descubra a tecnologia que transforma sua rotina de beleza em um
-            verdadeiro ritual.</p>
+        <h1>Nossas Coleções</h1>
+        <p>Cada uma de nossas coleções nasce com uma personalidade própria — como se tivesse alma. São criadas a partir
+            de diferentes gostos, estilos e inspirações, unindo tendências atuais ao toque autêntico de quem não tem
+            medo de se expressar. Aqui, cada detalhe conta uma história, e cada peça traduz uma forma única de ser.</p>
         <button class="botao-anuncio1">Conhecer</button>
     </div>
 
@@ -177,21 +378,64 @@ onMounted(fetchCategoriasETipos)
         <div class="anuncio4"></div>
     </div>
 
+    <!-- ======= coleções aleatórias (área de baixo) ======= -->
     <div class="filtragem">
-        <h1>Explore o melhor de corpo e banho</h1>
+        <h1>Ache sua coleção ideal</h1>
         <div class="filtros">
-            <div class="filtro"><i class="fa-solid fa-prescription-bottle"></i> Esfoliante </div>
-            <div class="filtro"><i class="fa-solid fa-spray-can-sparkles"></i> Body Splash</div>
-            <div class="filtro"><i class="fa-solid fa-soap"></i> Creme</div>
-            <div class="filtro"><i class="fa-solid fa-pump-soap"></i> Hidratante</div>
-            <div class="filtro"><i class="fa-solid fa-baby-carriage"></i> Infantil</div>
+            <div class="filtro" v-for="colecao in colecoesAleatorias" :key="colecao.id">
+                <router-link :to="`/colecao/${colecao.id}`">{{ colecao.nome }}</router-link>
+            </div>
+
         </div>
     </div>
+    <section class="produtos-home">
+        <div class="card-container">
+            <div class="card" v-for="(produto, index) in produtosAleatoriosBaixo" :key="produto.id">
+                <!-- Coleção + Favorito -->
+                <div class="colecao">
+                    <h2><router-link :to="`/colecao/${produto.colecao.id}`" @click.stop>
+                            {{ produto.colecao.nome }}
+                        </router-link>
+                    </h2>
 
+                    <img :src="produto.isFavorito ? '/heart-full.png' : '/heart-empty.png'" class="icon-favorito"
+                        @click.stop="toggleFavoritoIndexBaixo(index)" />
+                </div>
+
+                <!-- Imagem do Produto -->
+                <div class="imagem-card" @click="goToProduto(produto.id)">
+                    <img :src="produto.imagem_produto || produto.colecao?.imagem_mostruario || '/fallback.png'"
+                        alt="Normal" class="normal" />
+                    <img :src="produto.imagem_amostra || produto.colecao?.imagem_mostruario || produto.imagem_produto || '/fallback.png'"
+                        alt="Hover" class="hover" />
+                </div>
+
+                <!-- Nome e descrição -->
+                <div class="titulo-card">{{ produto.nome }}</div>
+                <div class="descricao-card">{{ produto.descricao_colecao || produto.colecao?.descricao || "" }}</div>
+
+                <!-- Preço -->
+                <div class="valor-card">
+                    <div class="escrita-valor">R$</div>
+                    <div class="numero-valor">
+                        {{ produto.preco?.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2, maximumFractionDigits: 2
+                        }) || "0,00" }}
+                    </div>
+                </div>
+
+                <!-- Botão adicionar à sacola -->
+                <div class="botao-card">
+                    <button @click.stop="adicionarSacola(produto)">Adicionar à sacola</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- footer (mantive igual ao seu) -->
     <footer class="my-footer">
         <div class="my-container">
             <div class="my-row">
-                <!-- Coluna 1 -->
                 <div class="my-footer-col">
                     <h4>Sobre a Roma Beauty</h4>
                     <ul>
@@ -202,19 +446,16 @@ onMounted(fetchCategoriasETipos)
                     </ul>
                 </div>
 
-                <!-- Coluna 2 -->
                 <div class="my-footer-col">
                     <h4>Ajuda</h4>
                     <ul>
                         <li><router-link to="#">FAQ</router-link></li>
                         <li><router-link to="#">Envio</router-link></li>
-                        <li><router-link to="#">Devoluções</router-link></li>
                         <li><router-link to="#">Status do pedido</router-link></li>
                         <li><router-link to="#">Formas de pagamento</router-link></li>
                     </ul>
                 </div>
 
-                <!-- Coluna 3 -->
                 <div class="my-footer-col">
                     <h4>Produtos</h4>
                     <ul>
@@ -224,7 +465,6 @@ onMounted(fetchCategoriasETipos)
                     </ul>
                 </div>
 
-                <!-- Coluna 4 -->
                 <div class="my-footer-col">
                     <h4>Siga-nos</h4>
                     <div class="my-social-links">
@@ -243,9 +483,167 @@ onMounted(fetchCategoriasETipos)
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </template>
 
-
-
 <style scoped>
+/* Container dos cards */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    font-family: "Poppins", sans-serif;
+    margin-top: 50px;
+    margin-left: 0;
+    /* ou ajustar para centralizar */
+    justify-content: center;
+    /* centraliza o grid na tela */
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: 250px 250px 250px 250px 250px;
+    /* mantém igual à página original */
+    gap: 30px;
+    font-family: "Poppins", sans-serif;
+    margin-top: 50px;
+    margin-left: 75px;
+}
+
+.card {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
+    height: 430px;
+    /* altura fixa */
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.informacoes {
+    margin-left: 20px;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Coleção + Favorito */
+.colecao {
+    display: flex;
+    align-items: center;
+    gap: 108px;
+    margin-bottom: 10px;
+}
+
+.colecao h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.icon-favorito {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.icon-favorito:hover {
+    transform: scale(1.15);
+}
+
+/* Imagem do produto */
+.imagem-card {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 10px;
+}
+
+.imagem-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 180px;
+    height: 180px;
+    transition: opacity 0.5s ease;
+    margin-left: 10px;
+}
+
+.imagem-card img.hover {
+    opacity: 0;
+}
+
+.imagem-card:hover img.normal {
+    opacity: 0;
+}
+
+.imagem-card:hover img.hover {
+    opacity: 1;
+}
+
+/* Título e descrição */
+.titulo-card {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 3px;
+}
+
+.descricao-card {
+    width: 220px;
+    font-size: 0.9rem;
+}
+
+/* Preço */
+.valor-card {
+    display: flex;
+    margin-left: 100px;
+    margin-top: 2px;
+}
+
+.escrita-valor {
+    font-size: 1.1rem;
+    margin-top: 16.5px;
+}
+
+.numero-valor {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+/* Botão adicionar à sacola */
+.botao-card {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.botao-card button {
+    width: 170px;
+    height: 45px;
+    text-decoration: none;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    background-color: transparent;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.botao-card button:hover {
+    background-color: #84827e;
+    border: #84827e;
+    color: #ffffff;
+}
+
+
+
 /*footer*/
 .my-footer {
     background-color: #202020;
