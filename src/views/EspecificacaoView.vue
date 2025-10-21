@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import Menu from '@/components/Menu.vue'
+import CardsAleatorios from "@/components/CardsAleatorios.vue"
 
 const route = useRoute();
 
@@ -207,6 +208,11 @@ onMounted(fetchProduto);
       <img :src="produto.colecao?.imagem_mostruario || produto.imagem_amostra || '/fallback.png'"
         alt="banner da coleção" />
     </div>
+  </div>
+
+  <div class="pagina-outra">
+    <h1>Produtos em Destaque</h1>
+    <CardsAleatorios />
   </div>
 </template>
 
