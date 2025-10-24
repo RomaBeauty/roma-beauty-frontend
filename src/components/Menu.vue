@@ -925,16 +925,16 @@ onMounted(async () => {
 .menu-container {
     position: fixed;
     top: 0;
-    width: 92%;
+    width: 99%;
     border-radius: 20px;
     max-width: 1535px;
     margin-top: 10px;
     height: 70px;
     display: flex;
     align-items: center;
-    background-color: #dee2e5;
+    background-color: #000000;
     z-index: 999;
-    box-shadow: 2px 2px 5px #a3b1c6, -2px -2px 5px #ffffff;
+    box-shadow: 2px 2px 5px #d4d9e0, -2px -2px 5px #8d8d8d;
 }
 
 .menu {
@@ -995,7 +995,7 @@ onMounted(async () => {
 }
 
 .icons-menu i:hover {
-    color: #000000ad;
+    color: #84827e;
     transition: ease .5s;
 }
 

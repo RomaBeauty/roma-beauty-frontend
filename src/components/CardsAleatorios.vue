@@ -166,24 +166,14 @@ onMounted(() => {
 /* Container dos cards */
 .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
     font-family: "Poppins", sans-serif;
     margin-top: 50px;
-    margin-left: 0;
     /* ou ajustar para centralizar */
     justify-content: center;
-    /* centraliza o grid na tela */
-}
-
-.card-container {
     display: grid;
     grid-template-columns: 250px 250px 250px 250px 250px;
-    /* mantém igual à página original */
-    gap: 30px;
-    font-family: "Poppins", sans-serif;
-    margin-top: 50px;
-    margin-left: 75px;
+    margin-left: -10px;
 }
 
 .card {

@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import Menu from '@/components/Menu.vue'
 import CardsAleatorios from "@/components/CardsAleatorios.vue"
+import footer from "@/components/footer.vue"
 
 const route = useRoute();
 
@@ -32,7 +33,7 @@ async function fetchProduto() {
   }
 }
 
-// ❤️ Carregar status do favorito do produto
+// Carregar status do favorito do produto
 async function carregarFavorito() {
   const token = localStorage.getItem('access_token');
   if (!token) return;
@@ -48,7 +49,7 @@ async function carregarFavorito() {
   }
 }
 
-// ❤️ Favoritar / desfavoritar
+//Favoritar / desfavoritar
 async function toggleFavorito() {
   const token = localStorage.getItem('access_token');
   if (!token) {
@@ -136,73 +137,70 @@ onMounted(fetchProduto);
 </script>
 
 <template>
-  <Menu/>
+  <Menu />
 
   <div v-if="loading" class="carregando">Carregando produto...</div>
   <div v-else-if="error" class="erro">{{ error }}</div>
 
   <div v-else class="container">
-    <!-- IMAGEM PRINCIPAL -->
-    <div class="imagens-container">
-      <img :src="produto.imagem_produto || produto.imagem_amostra || '/fallback.png'" alt="imagem do produto" />
-    </div>
-
-    <!-- BLOCO DE ESPECIFICAÇÕES -->
-    <div class="expecificacoes-container">
-      <div class="icone-favorito" @click="toggleFavorito">
-        <img :src="isFavorito ? '/heart-full.png' : '/heart-empty.png'" alt="favorito" class="heart-icon" />
+      <!-- IMAGEM PRINCIPAL -->
+      <div class="imagens-container">
+        <img :src="produto.imagem_produto || produto.imagem_amostra || '/fallback.png'" alt="imagem do produto" />
       </div>
 
-
-      <div class="expecificacao">{{ produto.nome || 'Nome do produto' }}</div>
-      <div class="expecificacao-menor">{{ produto.category?.nome || produto.category || 'Categoria' }}</div>
-      <div class="detalhes">{{ produto.descricao || produto.colecao?.descricao || 'Descrição do produto.' }}</div>
-
-      <div class="valor">
-        <span class="escrita-valor">R$</span>
-        <span class="numero-valor">
-          {{ Number(produto.preco || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}
-        </span>
-      </div>
-
-      <div class="botao-compra">
-        <button @click="addToCart(produto)">Adicionar à sacola</button>
-      </div>
-
-      <!-- ACCORDION -->
-      <div class="accordion">
-        <div class="accordion-item" @click="toggleSection('composicao')">
-          <div class="accordion-title">
-            <span>Composição</span>
-            <i :class="activeSection === 'composicao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
-          </div>
-          <div class="accordion-content" v-if="activeSection === 'composicao'">
-            <p>{{ produto.composicao || 'Informações de composição não disponíveis.' }}</p>
-          </div>
+      <!-- BLOCO DE ESPECIFICAÇÕES -->
+      <div class="expecificacoes-container">
+        <div class="icone-favorito" @click="toggleFavorito">
+          <img :src="isFavorito ? '/heart-full.png' : '/heart-empty.png'" alt="favorito" class="heart-icon" />
         </div>
 
-        <div class="accordion-item" @click="toggleSection('modo')">
-          <div class="accordion-title">
-            <span>Modo de Uso</span>
-            <i :class="activeSection === 'modo' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
-          </div>
-          <div class="accordion-content" v-if="activeSection === 'modo'">
-            <p>{{ produto.modo_uso || 'Modo de uso não informado.' }}</p>
-          </div>
+        <div class="expecificacao">{{ produto.nome || 'Nome do produto' }}</div>
+        <div class="expecificacao-menor">{{ produto.category?.nome || produto.category || 'Categoria' }}</div>
+        <div class="detalhes">{{ produto.descricao || produto.colecao?.descricao || 'Descrição do produto.' }}</div>
+
+        <div class="valor">
+          <span class="escrita-valor">R$</span>
+          <span class="numero-valor">
+            {{ Number(produto.preco || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }}
+          </span>
         </div>
 
-        <div class="accordion-item" @click="toggleSection('indicacao')">
-          <div class="accordion-title">
-            <span>Indicação</span>
-            <i :class="activeSection === 'indicacao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+        <div class="botao-compra">
+          <button @click="addToCart(produto)">Adicionar à sacola</button>
+        </div>
+        <!-- ACCORDION -->
+        <div class="accordion">
+          <div class="accordion-item" @click="toggleSection('composicao')">
+            <div class="accordion-title">
+              <span>Composição</span>
+              <i :class="activeSection === 'composicao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+            </div>
+            <div class="accordion-content" v-if="activeSection === 'composicao'">
+              <p>{{ produto.composicao || 'Informações de composição não disponíveis.' }}</p>
+            </div>
           </div>
-          <div class="accordion-content" v-if="activeSection === 'indicacao'">
-            <p>{{ produto.indicacao || 'Indicação não informada.' }}</p>
+
+          <div class="accordion-item" @click="toggleSection('modo')">
+            <div class="accordion-title">
+              <span>Modo de Uso</span>
+              <i :class="activeSection === 'modo' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+            </div>
+            <div class="accordion-content" v-if="activeSection === 'modo'">
+              <p>{{ produto.modo_uso || 'Modo de uso não informado.' }}</p>
+            </div>
+          </div>
+
+          <div class="accordion-item" @click="toggleSection('indicacao')">
+            <div class="accordion-title">
+              <span>Indicação</span>
+              <i :class="activeSection === 'indicacao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+            </div>
+            <div class="accordion-content" v-if="activeSection === 'indicacao'">
+              <p>{{ produto.indicacao || 'Indicação não informada.' }}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
     <!-- BANNER -->
     <div class="banner">
       <img :src="produto.colecao?.imagem_mostruario || produto.imagem_amostra || '/fallback.png'"
@@ -214,12 +212,28 @@ onMounted(fetchProduto);
     <h1>Produtos em Destaque</h1>
     <CardsAleatorios />
   </div>
+
+    <footer/>
+
 </template>
 
 
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+.sub-container {
+  display: flex;
+}
+
+.pagina-outra{
+  text-align: center;
+}
+
+.pagina-outra h1{
+  justify-content: center; /* alinha no eixo horizontal */
+  align-items: center; 
+}
 
 .heart-icon {
   width: 30px;
@@ -909,7 +923,6 @@ onMounted(fetchProduto);
 }
 
 
-
 /* animação suave */
 .fade-enter-active,
 .fade-leave-active {
@@ -922,25 +935,7 @@ onMounted(fetchProduto);
 }
 
 
-.banner {
-  grid-area: banner;
-  background-color: black;
-  border-radius: 20px;
-  overflow: hidden;
-  height: 400px;
-  /* altura que você definir para o banner */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
-.banner img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  /* faz a imagem se ajustar sem cortar */
-  display: block;
-}
 
 .detalhes {
   margin-top: 20px;
@@ -971,14 +966,17 @@ onMounted(fetchProduto);
 
 .botao-compra button {
   text-decoration: none;
-  width: 70vh;
+  width: 80vh;
   height: 60px;
   font-size: 1.4rem;
   font-weight: 600;
   border-radius: 40px;
   box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
   border: none;
-  color: rgb(61, 56, 56);
+  cursor: pointer;
+ color: white;
+  background: #84827e;
+
 }
 
 .botao-compra button:hover {
@@ -1011,32 +1009,30 @@ onMounted(fetchProduto);
   display: grid;
   grid-template-areas:
     'imagens-container expecificacoes-container'
-    'cores-container imagem-container'
     'banner banner';
   gap: 30px;
   margin-left: 40px;
+  margin-top: 100px;
   margin-right: 40px;
 }
 
-.imagens-container {
-  grid-area: imagens-container;
-  background-color: #f1f0ed;
-  height: 80vh;
-  border-radius: 20px;
-  width: 80vh;
-  margin-left: 20px;
-}
-
-
 .imagens-container img {
-  margin-left: 40px;
+  grid-area: imagens-container;  
+  width:90vh;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+  height: 80vh;
+  margin-left: -35px;
+  border-radius: 20px;
+    border-radius: 20px;
 }
 
 /* EXPECIFICAÇÕES — bloco único (sem duplicar) */
 .expecificacoes-container {
   grid-area: expecificacoes-container;
-  background-color: #f1f0ed;
-  width: 100vh;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+
+  width:108vh;
+  margin-left: -20px;
   height: 74vh;
   /* altura fixa */
   border-radius: 20px;
@@ -1105,35 +1101,23 @@ onMounted(fetchProduto);
 
 .banner {
   grid-area: banner;
-  background-color: black;
   border-radius: 20px;
   overflow: hidden;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: -35px;
 }
 
 .banner img {
   width: 100%;
-  height: auto;
-  display: block;
+  border-radius: 20px;
 }
 
 /* layout completo original */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: "Poppins", sans-serif;
-  padding: 40px;
-}
-
-.imagens-container img {
-  width: 400px;
-  border-radius: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
 
 .expecificacoes-container {
-  width: 600px;
-  margin-top: 30px;
   text-align: left;
   position: relative;
 }
@@ -1179,6 +1163,7 @@ onMounted(fetchProduto);
 .numero-valor {
   font-size: 2rem;
   font-weight: 600;
+  margin-left: 80%;
 }
 
 .botao-compra {
@@ -1186,22 +1171,6 @@ onMounted(fetchProduto);
   justify-content: center;
 }
 
-.botao-compra button {
-  width: 200px;
-  height: 45px;
-  border-radius: 40px;
-  border: none;
-  background: #84827e;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-.botao-compra button:hover {
-  background-color: #6d6b68;
-  transition: 0.3s ease;
-}
 
 .accordion {
   margin-top: 30px;
@@ -1225,11 +1194,6 @@ onMounted(fetchProduto);
   color: #444;
 }
 
-.banner img {
-  width: 100%;
-  margin-top: 60px;
-  border-radius: 20px;
-}
 
 .carregando,
 .erro {
