@@ -60,22 +60,30 @@ async function fazerLogin() {
 
   try {
     const res = await axios.post(`${API_BASE}/token/`, {
-      email: user.email, // ou 'email' se seu backend usa email
+      email: user.email,
       password: user.password
     });
 
-    // SALVA O TOKEN NO localStorage
+    // Salva tokens e tipo de usuário
     localStorage.setItem('access_token', res.data.access);
     localStorage.setItem('refresh_token', res.data.refresh);
+    localStorage.setItem('tipo_usuario', res.data.tipo_usuario);
 
     alert("Login realizado com sucesso!");
-    router.push('/home'); // redireciona para a home ou página desejada
+
+    // Redireciona conforme tipo de usuário
+    if (res.data.tipo_usuario === 'funcionario') {
+      router.push('/funcionario');
+    } else {
+      router.push('/home');
+    }
 
   } catch (err) {
     console.error(err);
     alert("Email ou senha incorretos");
   }
 }
+
 </script>
 
 <style scoped>

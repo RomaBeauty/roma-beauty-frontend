@@ -7,6 +7,8 @@ import CompraView from '../views/CompraView.vue'
 import ColecaoPageView from '@/views/ColecaoPageView.vue'
 import SacolaView from '@/views/SacolaView.vue'
 import FavoritoView from '@/views/FavoritoView.vue'
+import FuncionarioDashboardView from '@/views/FuncionarioDashboardView.vue'
+import PedidosView from '@/views/PedidosView.vue'
 
 
 const router = createRouter({
@@ -56,7 +58,30 @@ const router = createRouter({
       path: '/favorito',
       name: 'Favorito',
       component: FavoritoView
-    }
+    },
+    {
+      path: '/funcionario',
+      component: FuncionarioDashboardView,
+      beforeEnter: (to, from, next) => {
+        const tipo = localStorage.getItem('tipo_usuario');
+        if (tipo === 'funcionario') {
+          next();
+        } else {
+          next('/home');
+        }
+      }
+    },
+    
+    {
+      path: '/pedidos',
+      name: 'Pedidos',
+      component: PedidosView
+    },
+    {
+      path: '/pedido/:id',
+      name: 'PedidoDetalhes',
+      component: () => import('../views/PedidoDetalhesView.vue'),
+    },
   ],
 })
 
