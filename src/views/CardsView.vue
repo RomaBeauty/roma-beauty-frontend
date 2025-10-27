@@ -252,29 +252,6 @@ function goToProduto(produtoId) {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
-.colecao {
-  display: flex;
-  align-items: center;
-  gap: 108px;
-  /* espaço entre o nome e o coração */
-}
-
-.colecao h2 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.icon-favorito {
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.icon-favorito:hover {
-  transform: scale(1.15);
-}
 
 
 .banner1 img {
@@ -285,90 +262,6 @@ function goToProduto(produtoId) {
   margin-left: 30px;
 }
 
-.escrita-valor {
-  font-size: 1.1rem;
-  margin-top: 16.5px;
-}
-
-.descricao-card {
-  width: 220px;
-}
-
-.numero-valor {
-  font-size: 2rem;
-  font-weight: 600;
-}
-
-.valor-card {
-  display: flex;
-  margin-left: 100px;
-  margin-top: 2px;
-}
-
-.botao-card {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.botao-card button {
-  width: 170px;
-  height: 45px;
-  text-decoration: none;
-  border: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, .20);
-  background-color: transparent;
-  border-radius: 40px;
-  font-size: 1rem;
-  font-weight: 600;
-  font-family: "Poppins", sans-serif;
-  cursor: pointer;
-}
-
-.botao-card button:hover {
-  background-color: #84827e;
-  border: #84827e;
-  transition: ease 0.4s;
-  color: #ffffff;
-}
-
-.titulo-card {
-  font-size: 1.1rem;
-  margin-top: 3px;
-  font-weight: 700;
-}
-
-.descricao-card {
-  font-size: .9rem;
-}
-
-.imagem-card {
-  position: relative;
-  width: 180px;
-  height: 180px;
-}
-
-.imagem-card img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 180px;
-  height: 180px;
-  transition: opacity 0.5s ease;
-  margin-left: 10px;
-}
-
-.imagem-card img.hover {
-  opacity: 0;
-}
-
-.imagem-card:hover img.normal {
-  opacity: 0;
-}
-
-.imagem-card:hover img.hover {
-  opacity: 1;
-}
 
 :deep(.colecao a) {
   color: inherit;
@@ -385,6 +278,7 @@ function goToProduto(produtoId) {
   color: inherit;
   text-decoration: none;
   font-weight: 600;
+  margin-left: -20px;
 }
 
 .colecao a:hover {
@@ -392,81 +286,202 @@ function goToProduto(produtoId) {
   transition: color 0.3s ease;
 }
 
-.informacoes {
-  margin-left: 20px;
-  font-family: "Poppins", sans-serif;
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(5, 250px);
+  justify-content: center;
+  gap: 30px;
+    margin: 0 auto; /* centraliza o grid */
+  padding: 40px;
 }
 
-.card {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
-  height: 430px;
+
+.titulo {
+  background-color: black;
+  width: 100%;
+  max-width: 1200px;
+  height: 130px;
   border-radius: 20px;
+  margin: 100px auto 40px auto; /* centraliza horizontalmente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titulo h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 700;
+  margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+.card {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
+    height: 430px;
+    /* altura fixa */
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+}
+
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.informacoes {
+  width: 100%;
+}
+
+.colecao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
+  width: 100%;
+}
+
+.colecao h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.colecao a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.colecao a:hover {
+  color: #84827e;
+}
+
+.icon-favorito {
+  width: 22px;
+  height: 22px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
 
-.card:hover {
-  transform: translateY(-5px);
+.icon-favorito:hover {
+  transform: scale(1.2);
 }
 
-.card-container {
-  display: grid;
-  grid-template-columns: 250px 250px 250px 250px 250px;
-  gap: 30px;
-  font-family: "Poppins", sans-serif;
-  margin-top: 50px;
-  margin-left: 75px;
+
+
+/* Imagem do produto */
+.imagem-card {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 10px;
+
+    margin: 10px 0;
+  flex-shrink: 0;
 }
 
-.titulo {
-  background-color: black;
-  width: 200vh;
-  height: 130px;
-  border-radius: 20px;
-  margin-left: 65px;
+.imagem-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  transition: opacity 0.5s ease;
 }
 
-.titulo h1 {
-  font-size: 4rem;
-  font-family: "Poppins", sans-serif;
-  color: #ffffff;
-  justify-content: center;
-  display: flex;
+
+.imagem-card img.hover {
+    opacity: 0;
 }
 
-.filtragem {
-  font-family: 'Poppins', sans-serif;
-  margin-top: 50px;
+.imagem-card:hover img.normal {
+    opacity: 0;
+}
+
+.imagem-card:hover img.hover {
+    opacity: 1;
+}
+
+/* Título e descrição */
+.titulo-card {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: -10px;
   text-align: center;
-  font-size: 1rem;
-  margin-left: 140px;
-  font-weight: 600;
 }
 
-.filtros {
-  display: flex;
-  margin-top: 40px;
-  gap: 10px;
+
+.descricao-card {
+  font-size: 0.85rem;
+  text-align: center;
+  color: #444;
+  height: 60px; /* altura fixa pra evitar deslocamento */
+  overflow: hidden;
+}
+/* Preço */
+.valor-card {
+    display: flex;
+    margin-left: 100px;
+    margin-top: 6px;
+  align-items: flex-end;
+
 }
 
-.filtro {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
-  border-radius: 40px;
-  width: 200px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.escrita-valor {
+    font-size: 1.1rem;
+    margin-top: 10px;
 }
 
-.filtro:hover {
-  background-color: #84827e;
-  transition: ease .5s;
-  color: #ffffff;
+.numero-valor {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: -5px;
 }
 
-.filtro i {
-  margin-right: 10px;
-  margin-top: -5px;
+/* Botão adicionar à sacola */
+.botao-card {
+    display: flex;
+    justify-content: center;
+
+  }
+.botao-card button {
+    width: 170px;
+    height: 45px;
+    margin-top: 5px;
+    text-decoration: none;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    background-color: transparent;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.botao-card button:hover {
+    background-color: #84827e;
+    border: #84827e;
+    color: #ffffff;
 }
 </style>

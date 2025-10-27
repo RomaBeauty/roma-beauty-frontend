@@ -5,6 +5,34 @@ import axios from "axios";
 import Menu from '@/components/Menu.vue'
 import CardsAleatorios from "@/components/CardsAleatorios.vue"
 import Footer from '@/components/Footer.vue'
+import LoadingPreloader from '@/components/LoadingPreloader.vue'
+  // preloader inicio
+
+const loadingPreloaderAtivo = ref(true)
+const produtosHome = ref([])
+
+async function carregarProdutosHome() {
+  loadingPreloaderAtivo.value = true
+  try {
+    const res = await axios.get('http://127.0.0.1:8000/api/produtos/')
+    produtosHome.value = res.data.results || res.data
+  } catch (e) {
+    console.error(e)
+  } finally {
+    loadingPreloaderAtivo.value = false
+  }
+}
+
+
+onMounted(() => {
+  // Mantém o preloader por 5 segundos (5000ms)
+  setTimeout(() => {
+    loadingPreloaderAtivo.value = false;
+  }, 5000);
+});
+
+  // preloader fim
+
 
 const route = useRoute();
 
@@ -137,6 +165,15 @@ onMounted(fetchProduto);
 </script>
 
 <template>
+      <!-- preloader inicio -->
+
+  <LoadingPreloader :ativoPreloader="loadingPreloaderAtivo">
+    <template #extra>
+    </template>
+  </LoadingPreloader>
+
+        <!-- preloader fim -->
+
   <Menu />
 
   <div v-if="loading" class="carregando">Carregando produto...</div>

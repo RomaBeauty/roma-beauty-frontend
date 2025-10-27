@@ -225,17 +225,44 @@ const enviarFormulario = async () => {
 
 <style scoped>
 .container {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  gap: 20px;
+  display: flex;
+  height: 100vh; /* ocupa toda a altura da tela */
+  overflow: hidden;
   font-family: 'Poppins', sans-serif;
-  margin: 0;
 }
 
 .lado1 {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex: 1;
   text-align: center;
-  border-right: 1px solid #ccc;
   padding: 20px;
+  border-right: 1px solid #ccc;
+  background-color: #fff;
+  margin-top: 150px;
+}
+
+.lado2 {
+  flex: 1;
+  background-color: rgb(241, 240, 237);
+  padding: 30px;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+
+.lado2 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.lado2 h2{
+  margin-top: 80px;
+  text-align: center;;
 }
 
 .formulario form {
@@ -286,21 +313,14 @@ button:hover {
   background-color: #555;
 }
 
-.lado2 {
-  background-color: rgb(241, 240, 237);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: 100%;
-}
 
 .item {
   display: flex;
-  gap: 10px;
+  gap: 30px;
   padding: 10px;
-  background: #fff;
-  border-radius: 10px;
+  border-top: #c8c8c889 solid 0.1px;
+  border-bottom: #c8c8c889 solid 0.1px;
+  height: 100px;
 }
 
 .imagem-produto {
@@ -313,12 +333,14 @@ button:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  margin-top: 5px;
+  border: #555555 solid 1px;;
   border-radius: 6px;
 }
 
 .quantidade {
   position: absolute;
-  top: -10px;
+  top: -2px;
   right: -10px;
   background-color: #333;
   color: #fff;
@@ -349,6 +371,11 @@ button:hover {
 }
 
 .resumo {
+  margin-top: 20px;
+}
+
+.resumo span{
+  font-size: 2rem;
   margin-top: 20px;
 }
 

@@ -176,8 +176,6 @@ onMounted(() => {
     margin-left: -10px;
 }
 
-
-
 .card {
     box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
     height: 430px;
@@ -235,9 +233,6 @@ onMounted(() => {
     margin: 10px 0;
   flex-shrink: 0;
 }
-
-
-
 
 .imagem-card img {
   width: 100%;

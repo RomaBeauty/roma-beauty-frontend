@@ -71,9 +71,9 @@ onMounted(fetchSacola)
 </script>
 
 <template>
-   <Menu/>
+  <Menu />
 
-<div v-if="loading" class="carregando">Carregando produto...</div>
+  <div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="sacola-container">
     <h1>Sacola de Compras</h1>
 
@@ -82,13 +82,17 @@ onMounted(fetchSacola)
     <div v-else-if="sacola.length === 0">Sua sacola está vazia.</div>
 
     <div v-else>
+      
       <div class="item" v-for="item in sacola" :key="item.id">
         <img :src="item.produto?.imagem_produto || '/fallback.png'" alt="Produto" />
         <div class="info">
           <h2>{{ item.produto?.nome || 'Produto' }}</h2>
-          <p>Preço: R$ {{ (item.produto?.preco || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</p>
+          <p>Preço: R$ {{ (item.produto?.preco || 0).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2 }) }}</p>
           <p>Quantidade: {{ item.quantidade || 1 }}</p>
-          <p>Subtotal: R$ {{ ((item.produto?.preco || 0) * (item.quantidade || 1)).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</p>
+          <p>Subtotal: R$ {{ ((item.produto?.preco || 0) * (item.quantidade || 1)).toLocaleString('pt-BR', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</p>
           <button @click="removeItem(item.id)">Remover</button>
         </div>
       </div>
@@ -103,16 +107,61 @@ onMounted(fetchSacola)
 </template>
 
 <style scoped>
-.sacola-container { padding: 2rem; font-family: 'Poppins', sans-serif; }
-.item { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #ccc; padding-bottom: 1rem; }
-.item img { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; }
-.info h2 { margin: 0 0 0.5rem 0; }
-.info p { margin: 0.2rem 0; }
-.info button { margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 20px; border: none; background-color: #000; color: #fff; cursor: pointer; }
-.info button:hover { background-color: #84827e; }
-.total { text-align: right; margin-top: 2rem; font-size: 1.5rem; font-weight: 600; }
-.finalizar { margin-top: 20px; padding: 10px 20px; background-color: #00a651; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600; }
-.finalizar:hover { background-color: #007f3d; }
+.sacola-container {
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.info h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+.info p {
+  margin: 0.2rem 0;
+}
+
+.info button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: none;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+}
+
+.info button:hover {
+  background-color: #84827e;
+}
+
+.total {
+  text-align: right;
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.finalizar {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #000000;
+  color: white;
+  width: 300px;
+  height: 60px;
+  margin-left: 80%;  
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.finalizar:hover {
+  transform: scale(1.00);
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  transition: ease all 1s;
+}
 
 .sacola-container {
   padding: 2rem;
@@ -140,9 +189,6 @@ h1 {
   border-radius: 10px;
 }
 
-.info h2 {
-  margin: 0 0 0.5rem 0;
-}
 
 .info p {
   margin: 0.2rem 0;
@@ -161,6 +207,7 @@ h1 {
 
 .info button:hover {
   background-color: #84827e;
+  transition: ease all 1s;
 }
 
 .total {
@@ -169,4 +216,47 @@ h1 {
   font-size: 1.5rem;
   font-weight: 600;
 }
+
+
+
+.item {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background-color: #f8f8f8;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.item:hover {
+  transform: scale(1.02);
+}
+.item img {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+.info h2 {
+  font-size: 1.3rem;
+  color: #333;
+  font-weight: 600;
+}
+.total {
+  position: sticky;
+  bottom: 0;
+  background-color: #fff;
+  padding: 1rem;
+  border-top: 2px solid #000;
+  text-align: right;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+
+
 </style>
