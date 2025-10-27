@@ -483,5 +483,6 @@ function goToProduto(produtoId) {
     background-color: #84827e;
     border: #84827e;
     color: #ffffff;
+    
 }
 </style>

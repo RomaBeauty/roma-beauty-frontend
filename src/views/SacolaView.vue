@@ -150,7 +150,7 @@ onMounted(fetchSacola)
   height: 60px;
   margin-left: 80%;  
   font-size: 1.2rem;
-  border: none;
+  border: 2px solid #000;
   cursor: pointer;
   font-weight: 600;
 }

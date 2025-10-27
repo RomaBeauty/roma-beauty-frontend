@@ -44,7 +44,6 @@
                 </div>
             </div>
         </div>
-        <div class="nome">ROMA BEAUTY</div>
     </footer>
 </template>
 
@@ -52,13 +51,6 @@
 
 
 /*footer*/
-.nome{
-    color: white;
-    text-align: center;
-    margin-top: 20px;
-    font-size: 10rem;
-    
-}
 
 html, body {
   margin: 0;

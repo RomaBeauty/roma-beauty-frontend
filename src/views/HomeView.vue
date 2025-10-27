@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import axios from "axios"
-
+import Footer from "@/components/Footer.vue"
 // ---- Endpoints ----
 const API_URL_CATEGORIAS = "http://127.0.0.1:8000/api/categories/"
 const API_URL_TIPOS = "http://127.0.0.1:8000/api/tipos/"
@@ -251,10 +251,17 @@ onMounted(async () => {
     await fetchCategoriasETipos()
     await fetchProdutosAleatorios()
 })
+
+// ---- topo ----
+
+function voltarAoTopo() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
+
 </script>
-
-
-
 
 
 <template>
@@ -278,7 +285,7 @@ onMounted(async () => {
                                 <li v-for="cat in categorias" :key="cat.id" @click="selecionarOpcao(cat)">
                                     {{ cat.nome }}
                                 </li>
-                                <li><router-link to="/">Home</router-link></li>
+                                <li><router-link to="/home">INÍCIO</router-link></li>
                             </ul>
                         </div>
 
@@ -310,7 +317,6 @@ onMounted(async () => {
             </div>
         </div>
 
-        <br />
         <!-- Banner principal (mantive o seu arquivo original) -->
         <div class="imagem-principal">
             <img src="/public/imagem/imagem-principal.png" alt="">
@@ -318,7 +324,7 @@ onMounted(async () => {
     </div>
     <!-- ===== SEÇÃO DE PRODUTOS ALEATÓRIOS ===== -->
     <section class="produtos-home">
-        <h1>Aqui é Tendência</h1>
+        <h1>Aqui é Tendência!</h1>
         <div class="card-container">
             <div class="card" v-for="(produto, index) in produtosAleatoriosTopo" :key="produto.id">
                 <!-- Coleção + Favorito -->
@@ -363,7 +369,6 @@ onMounted(async () => {
     </section>
 
 
-    <!-- texto central e anuncio (mantive conforme você pediu) -->
     <div class="anuncio1">
         <h1>Nossas Coleções</h1>
         <p>Cada uma de nossas coleções nasce com uma personalidade própria — como se tivesse alma. São criadas a partir
@@ -431,52 +436,31 @@ onMounted(async () => {
             </div>
         </div>
     </section>
+<div class="marquee">
+  <span>💥FRETE GRÁTIS — NOVAS COLEÇÕES DISPONÍVEIS — FAZEMOS PIX 💥</span>
+  
+</div>
+<section class="beneficios">
+  <div>
+    <i class="fa-solid fa-truck-fast"></i>
+    <h4>Entrega Rápida</h4>
+    <p>Envios para todo o Brasil</p>
+  </div>
+  <div>
+    <i class="fa-solid fa-leaf"></i>
+    <h4>Eco Friendly</h4>
+    <p>Produtos sustentáveis</p>
+  </div>
+  <div>
+    <i class="fa-solid fa-credit-card"></i>
+    <h4>Pagamentos Seguros</h4>
+    <p>Via cartão, Pix e boleto</p>
+  </div>
+</section>
 
-    <!-- footer (mantive igual ao seu) -->
-    <footer class="my-footer">
-        <div class="my-container">
-            <div class="my-row">
-                <div class="my-footer-col">
-                    <h4>Sobre a Roma Beauty</h4>
-                    <ul>
-                        <li><router-link to="#">Nossa história</router-link></li>
-                        <li><router-link to="#">Missão e valores</router-link></li>
-                        <li><router-link to="#">Política de privacidade</router-link></li>
-                        <li><router-link to="#">Afiliados</router-link></li>
-                    </ul>
-                </div>
+<button class="voltar-topo" @click="voltarAoTopo">↑</button>
 
-                <div class="my-footer-col">
-                    <h4>Ajuda</h4>
-                    <ul>
-                        <li><router-link to="#">FAQ</router-link></li>
-                        <li><router-link to="#">Envio</router-link></li>
-                        <li><router-link to="#">Status do pedido</router-link></li>
-                        <li><router-link to="#">Formas de pagamento</router-link></li>
-                    </ul>
-                </div>
-
-                <div class="my-footer-col">
-                    <h4>Produtos</h4>
-                    <ul>
-                        <li><router-link to="#">Cabelo</router-link></li>
-                        <li><router-link to="#">Maquiagem</router-link></li>
-                        <li><router-link to="#">skincare</router-link></li>
-                    </ul>
-                </div>
-
-                <div class="my-footer-col">
-                    <h4>Siga-nos</h4>
-                    <div class="my-social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <Footer/>    
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
         integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
@@ -484,27 +468,91 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.voltar-topo {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: 0.3s;
+  opacity: 0.8;
+  z-index: 9999;
+}
+
+.voltar-topo:hover {
+  opacity: 1;
+  background: #161616;
+}
+
+.beneficios {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin: 80px 0;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+.beneficios div {
+  width: 180px;
+}
+.beneficios i {
+  font-size: 2rem;
+  color: #84827e;
+  margin-bottom: 10px;
+}
+.beneficios h4 {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+
+.marquee {
+  background-color: #000;
+  color: #fff;
+  margin-top: 40px;
+  padding: 10px 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+.marquee span {
+  display: inline-block;
+  animation: scrollText 10s linear infinite;
+}
+@keyframes scrollText {
+  from { transform: translateX(300%); }
+  to { transform: translateX(-100%); }
+}
+
+
+
+
+
+
+.produtos-home h1{
+    text-align: center;
+    font-size: 2rem;
+}
+
 /* Container dos cards */
 .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
     font-family: "Poppins", sans-serif;
     margin-top: 50px;
-    margin-left: 0;
     /* ou ajustar para centralizar */
     justify-content: center;
-    /* centraliza o grid na tela */
-}
-
-.card-container {
     display: grid;
     grid-template-columns: 250px 250px 250px 250px 250px;
-    /* mantém igual à página original */
-    gap: 30px;
-    font-family: "Poppins", sans-serif;
-    margin-top: 50px;
-    margin-left: 75px;
+    margin-left: -10px;
 }
 
 .card {
@@ -530,29 +578,34 @@ onMounted(async () => {
     font-family: "Poppins", sans-serif;
 }
 
-/* Coleção + Favorito */
 .colecao {
-    display: flex;
-    align-items: center;
-    gap: 108px;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .colecao h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;  
+
+}
+
+.colecao a{
+        text-decoration: none;
+color: #000;
 }
 
 .icon-favorito {
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .icon-favorito:hover {
-    transform: scale(1.15);
+  transform: scale(1.15);
 }
 
 /* Imagem do produto */
@@ -561,17 +614,21 @@ onMounted(async () => {
     width: 180px;
     height: 180px;
     margin-bottom: 10px;
+
+    margin: 10px 0;
+  flex-shrink: 0;
 }
 
 .imagem-card img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 180px;
-    height: 180px;
-    transition: opacity 0.5s ease;
-    margin-left: 10px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.5s ease;
 }
+
 
 .imagem-card img.hover {
     opacity: 0;
@@ -587,26 +644,33 @@ onMounted(async () => {
 
 /* Título e descrição */
 .titulo-card {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-top: 3px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
 }
 
+
 .descricao-card {
-    width: 220px;
-    font-size: 0.9rem;
+  font-size: 0.85rem;
+  text-align: center;
+  color: #444;
+  height: 60px; /* altura fixa pra evitar deslocamento */
+  overflow: hidden;
 }
+
 
 /* Preço */
 .valor-card {
     display: flex;
     margin-left: 100px;
-    margin-top: 2px;
+    margin-top: 6px;
+  align-items: flex-end;
+
 }
 
 .escrita-valor {
     font-size: 1.1rem;
-    margin-top: 16.5px;
+    margin-top: 10px;
 }
 
 .numero-valor {
@@ -642,102 +706,6 @@ onMounted(async () => {
     color: #ffffff;
 }
 
-
-
-/*footer*/
-.my-footer {
-    background-color: #202020;
-    padding: 70px 0;
-    margin-top: 150px;
-    font-family: 'Poppins', sans-serif;
-    border-radius: 30px;
-}
-
-.my-container {
-    width: 1170px;
-    margin: auto;
-}
-
-.my-row {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.my-footer-col {
-    width: 20%;
-    padding: 0 15px;
-}
-
-.my-footer-col h4 {
-    font-size: 18px;
-    color: #ffffff;
-    text-transform: capitalize;
-    margin-bottom: 35px;
-    font-weight: 500;
-    position: relative;
-}
-
-.my-footer-col h4::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -10px;
-    background-color: #ffffff;
-    height: 2px;
-    width: 50px;
-}
-
-.my-footer-col ul li:not(:last-child) {
-    margin-bottom: 10px;
-}
-
-.my-footer-col ul li a {
-    font-size: 16px;
-    text-transform: capitalize;
-    color: #bbbbbb;
-    text-decoration: none;
-    display: block;
-    transition: all 0.3s ease;
-}
-
-.my-footer-col ul li a:hover {
-    color: #ffffff;
-    padding-left: 8px;
-}
-
-.my-social-links a {
-    display: inline-block;
-    height: 40px;
-    width: 40px;
-    background-color: rgba(255, 255, 255, 0.2);
-    margin: 0 10px 10px 0;
-    text-align: center;
-    line-height: 40px;
-    border-radius: 50%;
-    color: #ffffff;
-    transition: all 0.5s ease;
-}
-
-.my-social-links a:hover {
-    color: #24262b;
-    background-color: #ffffff;
-}
-
-/* Responsivo */
-@media(max-width: 767px) {
-    .my-footer-col {
-        width: 50%;
-        margin-bottom: 30px;
-    }
-}
-
-@media(max-width: 574px) {
-    .my-footer-col {
-        width: 100%;
-    }
-}
-
-/*footer*/
 
 .imagem-principal img {
     width: 100%;
@@ -1069,6 +1037,20 @@ onMounted(async () => {
     font-weight: 600;
 }
 
+.filtragem h1{
+    font-size: 2rem;
+}
+
+.filtragem a{
+    color: #000;
+    text-decoration: none;
+}
+
+.filtragem a:hover{
+    color: #fff;
+    
+}
+
 .filtros {
     display: flex;
     margin-top: 40px;
@@ -1086,12 +1068,12 @@ onMounted(async () => {
     justify-content: center;
     /* Centraliza horizontalmente */
     align-items: center;
+        transition: ease .5s;
+
 }
 
 .filtro:hover {
-    background-color: #84827e;
-    transition: ease .5s;
-    color: #ffffff;
+    background-color: #000000;
 }
 
 .filtro i {
@@ -1107,7 +1089,7 @@ onMounted(async () => {
     width: 190vh;
     height: 250px;
     background-color: #000;
-    margin-left: 62px;
+    margin-left: 90px;
     margin-top: 40px;
     border-radius: 20px;
     border-top: 1px solid transparent;
@@ -1203,19 +1185,20 @@ onMounted(async () => {
 /*CARDS*/
 
 /*MENU*/
+
+/*MENU*/
 .menu-container {
     position: fixed;
     top: 0;
-    width: 92%;
+    width: 99%;
     border-radius: 20px;
     max-width: 1535px;
     margin-top: 10px;
     height: 70px;
     display: flex;
     align-items: center;
-    background-color: #dee2e5;
+    background-color: #000000;
     z-index: 999;
-    box-shadow: 2px 2px 5px #a3b1c6, -2px -2px 5px #ffffff;
 }
 
 .menu {
@@ -1276,7 +1259,7 @@ onMounted(async () => {
 }
 
 .icons-menu i:hover {
-    color: #000000ad;
+    color: #585656ad;
     transition: ease .5s;
 }
 
@@ -1285,7 +1268,7 @@ onMounted(async () => {
 }
 
 .menu i:hover {
-    color: #000000ad;
+    color: #716f6fad;
     transition: ease .5s;
 }
 

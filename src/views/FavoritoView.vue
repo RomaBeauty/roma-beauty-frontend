@@ -119,7 +119,7 @@ onMounted(fetchFavoritos)
 <div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="favoritos-page">
     <h1>MEUS FAVORITOS ❤️</h1>
-    <button class="remover-todos" @click="removerTodosFavoritos">Remover todos</button>
+    <button class="remover-todos" @click="removerTodosFavoritos">Remover todos <i class="fa-solid fa-trash"></i></button>
 
     <div v-if="loading" class="loading">Carregando...</div>
     <div v-else-if="error" class="erro">{{ error }}</div>
@@ -137,6 +137,9 @@ onMounted(fetchFavoritos)
       </div>
     </div>
   </div>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+        integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </template>
 
 <style scoped>
@@ -155,16 +158,35 @@ h1 {
   margin: 0 auto 30px auto;
   padding: 10px 25px;
   border-radius: 30px;
-  background: #d9534f;
+  background: #000000;
   color: white;
   font-weight: 600;
   border: none;
+  cursor: pointer;  
+  width: 300px;
+  height: 60px;
+  font-size: 1.2rem;
+  border: 2px solid #000;
   cursor: pointer;
+  font-weight: 600;
+    transition: all  1s ease;
+
 }
 
 .remover-todos:hover {
-  background: #c9302c;
+  transform: scale(1.00);
+  background-color: #c13636;
+  color: #000;
+  border: 2px solid #c13636;
+  transition: ease all 1s;
 }
+
+
+
+
+
+ 
+
 
 .grid-favoritos {
   display: grid;
@@ -202,22 +224,29 @@ h1 {
 }
 
 .botoes-card .remover {
-  background: #84827e;
-  color: white;
+  background: #ffffff;
+  color: rgb(0, 0, 0);
+    transition: all 0.5s ease;
+      border: #ffffff 1px solid;
+
 }
 
 .botoes-card .remover:hover {
-  background: black;
+  color: #84827e;
+      border: #84827e 1px solid;
+
 }
 
 .botoes-card .adicionar {
-  background: #00a651;
+  background: #000000;
   color: white;
+  transition: all 0.5s ease;
 }
 
 .botoes-card .adicionar:hover {
-  background: #007f3d;
-}
+ background-color: #84827e;
+    color: #ffffff;
+  }
 
 .favoritos-page {
   padding: 40px;

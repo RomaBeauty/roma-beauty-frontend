@@ -204,13 +204,14 @@ onMounted(() => fetchColecao())
   display: flex;
   align-items: center;
   gap: 108px;
-  /* espaço entre o nome e o coração */
+  padding: 0 15px; /* margem interna */
 }
 
 .colecao h2 {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
+  
 }
 
 .icon-favorito {
@@ -336,6 +337,7 @@ onMounted(() => fetchColecao())
   color: inherit;
   text-decoration: none;
   font-weight: 600;
+
 }
 
 .colecao a:hover {
@@ -384,4 +386,6 @@ onMounted(() => fetchColecao())
   justify-content: center;
   display: flex;
 }
+
+
 </style>

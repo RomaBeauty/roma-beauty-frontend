@@ -163,7 +163,7 @@ onMounted(async () => {
               <li v-for="cat in categorias" :key="cat.id" @click="selecionarOpcao(cat)">
                 {{ cat.nome }}
               </li>
-              <li><router-link to="/">Home</router-link></li>
+              <li><router-link to="/home">INÍCIO</router-link></li>
             </ul>
           </div>
 
@@ -1004,7 +1004,7 @@ onMounted(async () => {
 }
 
 .menu i:hover {
-    color: #000000ad;
+    color: #84827e;
     transition: ease .5s;
 }
 
