@@ -1,3 +1,5 @@
+
+
 <template>
        <footer class="my-footer">
         <div class="my-container">
@@ -42,19 +44,36 @@
                 </div>
             </div>
         </div>
+        <div class="nome">ROMA BEAUTY</div>
     </footer>
 </template>
 
-<style scoped>
+<style>
 
 
 /*footer*/
+.nome{
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 10rem;
+    
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  overflow-x: hidden;
+}
+
 .my-footer {
-    background-color: #202020;
+    background-color: #000000;
     padding: 70px 0;
-    margin-top: 150px;
+    margin-top: 80px;
     font-family: 'Poppins', sans-serif;
-    border-radius: 30px;
+    width: 100%;           /* usa a largura do pai, não do viewport */
+    box-sizing: border-box; /* garante que padding não cause overflow */
 }
 
 .my-container {
@@ -98,7 +117,7 @@
 .my-footer-col ul li a {
     font-size: 16px;
     text-transform: capitalize;
-    color: #bbbbbb;
+    color: #ffffff;
     text-decoration: none;
     display: block;
     transition: all 0.3s ease;

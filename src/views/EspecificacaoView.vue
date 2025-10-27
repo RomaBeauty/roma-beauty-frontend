@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import Menu from '@/components/Menu.vue'
 import CardsAleatorios from "@/components/CardsAleatorios.vue"
-import footer from "@/components/footer.vue"
+import Footer from '@/components/Footer.vue'
 
 const route = useRoute();
 
@@ -169,37 +169,45 @@ onMounted(fetchProduto);
           <button @click="addToCart(produto)">Adicionar à sacola</button>
         </div>
         <!-- ACCORDION -->
-        <div class="accordion">
-          <div class="accordion-item" @click="toggleSection('composicao')">
-            <div class="accordion-title">
-              <span>Composição</span>
-              <i :class="activeSection === 'composicao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
-            </div>
-            <div class="accordion-content" v-if="activeSection === 'composicao'">
-              <p>{{ produto.composicao || 'Informações de composição não disponíveis.' }}</p>
-            </div>
-          </div>
-
-          <div class="accordion-item" @click="toggleSection('modo')">
-            <div class="accordion-title">
-              <span>Modo de Uso</span>
-              <i :class="activeSection === 'modo' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
-            </div>
-            <div class="accordion-content" v-if="activeSection === 'modo'">
-              <p>{{ produto.modo_uso || 'Modo de uso não informado.' }}</p>
-            </div>
-          </div>
-
-          <div class="accordion-item" @click="toggleSection('indicacao')">
-            <div class="accordion-title">
-              <span>Indicação</span>
-              <i :class="activeSection === 'indicacao' ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
-            </div>
-            <div class="accordion-content" v-if="activeSection === 'indicacao'">
-              <p>{{ produto.indicacao || 'Indicação não informada.' }}</p>
-            </div>
-          </div>
+         <!-- Aplicação -->
+      <div class="accordion">
+        <div class="accordion-header" @click="toggleSection('aplicacao')">
+          Aplicação
         </div>
+        <div class="accordion-content" :class="{ open: activeSection === 'aplicacao' }">
+          <p>
+            Aplique nos cabelos úmidos, massageando suavemente da raiz às
+            pontas. Enxágue bem.
+          </p>
+        </div>
+      </div>
+
+      <!-- Ingredientes -->
+      <div class="accordion">
+        <div class="accordion-header" @click="toggleSection('ingredientes')">
+          Ingredientes
+        </div>
+        <div class="accordion-content" :class="{ open: activeSection === 'ingredientes' }">
+          <p>
+            Água, Óleo de Argan, Queratina Hidrolisada, Extrato de Aloe Vera,
+            Vitaminas A e E.
+          </p>
+        </div>
+      </div>
+
+      <!-- Benefícios -->
+      <div class="accordion">
+        <div class="accordion-header" @click="toggleSection('beneficios')">
+          Benefícios
+        </div>
+        <div class="accordion-content" :class="{ open: activeSection === 'beneficios' }">
+          <p>
+            • Hidratação intensa <br>
+            • Redução do frizz <br>
+            • Brilho e maciez imediatos
+          </p>
+        </div>
+      </div>
       </div>
     <!-- BANNER -->
     <div class="banner">
@@ -207,13 +215,64 @@ onMounted(fetchProduto);
         alt="banner da coleção" />
     </div>
   </div>
+<div class="conteudo">
+  <div class="conteudo1">
+    <div class="icone-conteudo"><i class="fa-solid fa-seedling"></i></div>
+    <div class="sub-conteudo">Vegano</div>
+    <div class="txt-conteudo">Produto livre de ingredientes de origem animal</div>
+  </div>
+  <div class="conteudo2">
+    <div class="icone-conteudo"><i class="fa-solid fa-shield-alt"></i></div>
+    <div class="sub-conteudo">Seguro</div>
+    <div class="txt-conteudo">Testado dermatologicamente para sua pele</div>
+  </div>
+  <div class="conteudo3">
+    <div class="icone-conteudo"><i class="fa-solid fa-recycle"></i></div>
+    <div class="sub-conteudo">Sustentável</div>
+    <div class="txt-conteudo">Embalagem 100% reciclável e consciente</div>
+  </div>
+</div>
 
-  <div class="pagina-outra">
-    <h1>Produtos em Destaque</h1>
+<!-- Benefícios extras -->
+<div class="beneficios-section">
+  <h2>Benefícios do Produto</h2>
+  <div class="beneficios-cards">
+    <div class="beneficio-card">
+      <i class="fa-solid fa-droplet"></i>
+      <h3>Hidratação Intensa</h3>
+      <p>Deixa a pele macia e profundamente hidratada por 24h.</p>
+    </div>
+    <div class="beneficio-card">
+      <i class="fa-solid fa-sun"></i>
+      <h3>Proteção Diária</h3>
+      <p>Com ativos naturais que protegem contra agentes externos.</p>
+    </div>
+    <div class="beneficio-card">
+      <i class="fa-solid fa-heart"></i>
+      <h3>Dermatologicamente Testado</h3>
+      <p>Ideal para todos os tipos de pele, inclusive as sensíveis.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Informações técnicas -->
+<div class="tabela-info">
+  <h2>Informações Técnicas</h2>
+  <table>
+    <tr><th>Tipo</th><td>Cosmético</td></tr>
+    <tr><th>Volume</th><td>200 ml</td></tr>
+    <tr><th>Validade</th><td>24 meses</td></tr>
+    <tr><th>Cruelty-Free</th><td>Sim</td></tr>
+  </table>
+</div>
+
+
+   <div class="pagina-outra">
+    <h1>Você também pode gostar...</h1>
     <CardsAleatorios />
   </div>
 
-    <footer/>
+    <Footer/>
 
 </template>
 
@@ -221,6 +280,134 @@ onMounted(fetchProduto);
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+.beneficios-section {
+  text-align: center;
+  margin: 80px 0;
+}
+
+.beneficios-section h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.beneficios-cards {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.beneficio-card {
+  background: #f5f5f5;
+  border-radius: 20px;
+  width: 250px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.beneficio-card:hover {
+  transform: translateY(-10px);
+  background: #e9e9e9;
+}
+
+.beneficio-card i {
+  font-size: 2rem;
+  color: #84827e;
+  margin-bottom: 10px;
+}
+
+.beneficio-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.beneficio-card p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* tabela */
+.tabela-info {
+  margin: 60px auto;
+  width: 80%;
+  max-width: 700px;
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.tabela-info h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.tabela-info table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-info th, .tabela-info td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.tabela-info th {
+  color: #555;
+  font-weight: 600;
+  width: 40%;
+}
+
+.tabela-info td {
+  color: #333;
+}
+
+/* conteudo */
+.conteudo {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 80px;
+  text-align: center;
+}
+
+.conteudo1, .conteudo2, .conteudo3 {
+  background-color: #000;
+  color: #fff;
+  padding: 30px 20px;
+  border-radius: 20px;
+  width: 250px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.conteudo1:hover, .conteudo2:hover, .conteudo3:hover {
+  transform: translateY(-10px);
+  background-color: #222;
+}
+
+.icone-conteudo {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+.sub-conteudo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.txt-conteudo {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
 
 .sub-container {
   display: flex;
@@ -263,103 +450,6 @@ onMounted(fetchProduto);
   color: #333;
   /* mantém a cor ao passar o mouse */
 }
-
-
-/*footer*/
-
-.my-footer {
-  background-color: #343535;
-  padding: 70px 0;
-  margin-top: 150px;
-  font-family: 'Poppins', sans-serif;
-  border-radius: 30px;
-}
-
-.my-container {
-  width: 1170px;
-  margin: auto;
-}
-
-.my-row {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.my-footer-col {
-  width: 20%;
-  padding: 0 15px;
-}
-
-.my-footer-col h4 {
-  font-size: 18px;
-  color: #ffffff;
-  text-transform: capitalize;
-  margin-bottom: 35px;
-  font-weight: 500;
-  position: relative;
-}
-
-.my-footer-col h4::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -10px;
-  background-color: #feb7d9;
-  height: 2px;
-  width: 50px;
-}
-
-.my-footer-col ul li:not(:last-child) {
-  margin-bottom: 10px;
-}
-
-.my-footer-col ul li a {
-  font-size: 16px;
-  text-transform: capitalize;
-  color: #bbbbbb;
-  text-decoration: none;
-  display: block;
-  transition: all 0.3s ease;
-}
-
-.my-footer-col ul li a:hover {
-  color: #ffffff;
-  padding-left: 8px;
-}
-
-.my-social-links a {
-  display: inline-block;
-  height: 40px;
-  width: 40px;
-  background-color: rgba(255, 255, 255, 0.2);
-  margin: 0 10px 10px 0;
-  text-align: center;
-  line-height: 40px;
-  border-radius: 50%;
-  color: #ffffff;
-  transition: all 0.5s ease;
-}
-
-.my-social-links a:hover {
-  color: #24262b;
-  background-color: #ffffff;
-}
-
-/* Responsivo */
-@media(max-width: 767px) {
-  .my-footer-col {
-    width: 50%;
-    margin-bottom: 30px;
-  }
-}
-
-@media(max-width: 574px) {
-  .my-footer-col {
-    width: 100%;
-  }
-}
-
-/*footer*/
 
 
 
@@ -1033,7 +1123,7 @@ onMounted(fetchProduto);
 
   width:108vh;
   margin-left: -20px;
-  height: 74vh;
+  height: 80vh;
   /* altura fixa */
   border-radius: 20px;
   padding: 20px;
@@ -1053,13 +1143,11 @@ onMounted(fetchProduto);
   font-weight: bold;
   padding: 10px;
   cursor: pointer;
-  background: #ddd;
   border-radius: 8px;
   user-select: none;
 }
 
 .accordion-header:hover {
-  background: #bbb;
   transition: ease .5s;
 }
 
@@ -1163,7 +1251,6 @@ onMounted(fetchProduto);
 .numero-valor {
   font-size: 2rem;
   font-weight: 600;
-  margin-left: 80%;
 }
 
 .botao-compra {

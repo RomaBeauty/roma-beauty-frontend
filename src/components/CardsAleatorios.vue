@@ -176,6 +176,8 @@ onMounted(() => {
     margin-left: -10px;
 }
 
+
+
 .card {
     box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
     height: 430px;
@@ -199,29 +201,28 @@ onMounted(() => {
     font-family: "Poppins", sans-serif;
 }
 
-/* Coleção + Favorito */
 .colecao {
-    display: flex;
-    align-items: center;
-    gap: 108px;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .colecao h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 .icon-favorito {
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .icon-favorito:hover {
-    transform: scale(1.15);
+  transform: scale(1.15);
 }
 
 /* Imagem do produto */
@@ -230,17 +231,24 @@ onMounted(() => {
     width: 180px;
     height: 180px;
     margin-bottom: 10px;
+
+    margin: 10px 0;
+  flex-shrink: 0;
 }
 
+
+
+
 .imagem-card img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 180px;
-    height: 180px;
-    transition: opacity 0.5s ease;
-    margin-left: 10px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.5s ease;
 }
+
 
 .imagem-card img.hover {
     opacity: 0;
@@ -256,26 +264,33 @@ onMounted(() => {
 
 /* Título e descrição */
 .titulo-card {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-top: 3px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
 }
 
+
 .descricao-card {
-    width: 220px;
-    font-size: 0.9rem;
+  font-size: 0.85rem;
+  text-align: center;
+  color: #444;
+  height: 60px; /* altura fixa pra evitar deslocamento */
+  overflow: hidden;
 }
+
 
 /* Preço */
 .valor-card {
     display: flex;
     margin-left: 100px;
-    margin-top: 2px;
+    margin-top: 6px;
+  align-items: flex-end;
+
 }
 
 .escrita-valor {
     font-size: 1.1rem;
-    margin-top: 16.5px;
+    margin-top: 10px;
 }
 
 .numero-valor {
@@ -312,84 +327,5 @@ onMounted(() => {
 }
 
 
-
-/*footer*/
-.my-footer {
-    background-color: #202020;
-    padding: 70px 0;
-    margin-top: 150px;
-    font-family: 'Poppins', sans-serif;
-    border-radius: 30px;
-}
-
-.my-container {
-    width: 1170px;
-    margin: auto;
-}
-
-.my-row {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.my-footer-col {
-    width: 20%;
-    padding: 0 15px;
-}
-
-.my-footer-col h4 {
-    font-size: 18px;
-    color: #ffffff;
-    text-transform: capitalize;
-    margin-bottom: 35px;
-    font-weight: 500;
-    position: relative;
-}
-
-.my-footer-col h4::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -10px;
-    background-color: #ffffff;
-    height: 2px;
-    width: 50px;
-}
-
-.my-footer-col ul li:not(:last-child) {
-    margin-bottom: 10px;
-}
-
-.my-footer-col ul li a {
-    font-size: 16px;
-    text-transform: capitalize;
-    color: #bbbbbb;
-    text-decoration: none;
-    display: block;
-    transition: all 0.3s ease;
-}
-
-.my-footer-col ul li a:hover {
-    color: #ffffff;
-    padding-left: 8px;
-}
-
-.my-social-links a {
-    display: inline-block;
-    height: 40px;
-    width: 40px;
-    background-color: rgba(255, 255, 255, 0.2);
-    margin: 0 10px 10px 0;
-    text-align: center;
-    line-height: 40px;
-    border-radius: 50%;
-    color: #ffffff;
-    transition: all 0.5s ease;
-}
-
-.my-social-links a:hover {
-    color: #24262b;
-    background-color: #ffffff;
-}
 
 </style>
