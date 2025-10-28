@@ -75,7 +75,7 @@ onMounted(fetchSacola)
 
   <div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="sacola-container">
-    <h1>Sacola de Compras</h1>
+    <h1>SACOLA DE COMPRAS</h1>
 
     <div v-if="loading">Carregando...</div>
     <div v-else-if="error" style="color: tomato">{{ error }}</div>
@@ -166,6 +166,10 @@ onMounted(fetchSacola)
 .sacola-container {
   padding: 2rem;
   font-family: 'Poppins', sans-serif;
+}
+
+.sacola-container h1{
+  margin-top: 80px;
 }
 
 h1 {

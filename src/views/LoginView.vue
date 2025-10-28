@@ -30,8 +30,7 @@
         <button class="botao-acesso" @click="fazerLogin">Acessar</button>
 
         <div class="botao-login">
-          Ainda não tem uma conta?
-          <router-link to="/cadastro">Criar</router-link>
+          Ainda não tem uma conta?<router-link to="/cadastro">Criar</router-link>
         </div>
       </div>
     </div>
@@ -124,7 +123,6 @@ body {
   padding: 3rem 2rem;
   box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
   background-color: rgba(0, 0, 0, 0.6);
-  margin-left: 45vh;
 }
 
 /* Inputs */
@@ -132,6 +130,7 @@ body {
   position: relative;
   display: grid;
   margin: 20px 0;
+  color: #fff;
 }
 
 .input-cadastro {
@@ -176,6 +175,7 @@ body {
   font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 30px;
+  color: #fff;
 }
 
 /* Ícone dos inputs */
@@ -197,16 +197,19 @@ body {
   color: #3a3a3a;
   font-size: 1.2rem;
   font-weight: 600;
-  border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 10px;
   margin-left: 10vh;
+    border: 1px solid #7f7f7f;
+
 }
 
 .botao-acesso:hover {
-  background-color: #feb7d9c1;
-  color: #ffffff;
+  background-color: transparent;
+  color: #7f7f7f;
+  transition: all .5s ease;
+  border: 1px solid #7f7f7f;
 }
 
 /* Botão de cadastro */
@@ -216,20 +219,22 @@ body {
   color: #adaeb0;
   font-size: 1rem;
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 8px;
+    justify-content: center;
+  align-items: center;
+
 }
 
 .botao-login a {
-  color: #0049da;
+  color: #ffffff;
   font-weight: 700;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .botao-login a:hover {
-  color: #feb7d9;
+  color: #9c9c9c;
   cursor: pointer;
 }
 </style>

@@ -118,7 +118,7 @@ onMounted(fetchFavoritos)
 
 <div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="favoritos-page">
-    <h1>MEUS FAVORITOS ❤️</h1>
+    <h1>MEUS FAVORITOS</h1>
     <button class="remover-todos" @click="removerTodosFavoritos">Remover todos <i class="fa-solid fa-trash"></i></button>
 
     <div v-if="loading" class="loading">Carregando...</div>
@@ -146,6 +146,9 @@ onMounted(fetchFavoritos)
 .favoritos-page {
   padding: 40px;
   font-family: "Poppins", sans-serif;
+}
+.favoritos-page h1{
+  margin-top: 80px ;
 }
 
 h1 {
@@ -193,6 +196,7 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 25px;
 }
+
 
 .card {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);

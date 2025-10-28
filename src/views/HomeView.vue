@@ -708,7 +708,7 @@ color: #000;
 
 
 .imagem-principal img {
-    width: 100%;
+    width: 216vh;
     border-radius: 30px;
     height: 95%;
     margin-top: 10px;
@@ -720,11 +720,12 @@ color: #000;
 .menu-content {
     display: flex;
     gap: 30px;
-    height: 100%;
+    height: 90%;
 }
 
 .categorias {
     width: 40%;
+    height: 80%;
     border-right: 2px solid #d2d0cc;
     margin-left: 50px;
 }
@@ -732,7 +733,7 @@ color: #000;
 .subcategorias {
     width: 60%;
     padding-left: 20px;
-    margin-top: 100px;
+    margin-top: 10px;
 }
 
 .side-menu {
@@ -1063,12 +1064,12 @@ color: #000;
     box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
     border-radius: 40px;
     width: 170px;
-    height: 40px;
+    height: 60px;
     display: flex;
     justify-content: center;
     /* Centraliza horizontalmente */
     align-items: center;
-        transition: ease .5s;
+    transition: ease .5s;
 
 }
 

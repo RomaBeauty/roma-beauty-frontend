@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import Menu from '@/components/Menu.vue'
+import Footer from "@/components/Footer.vue"
+
 
 const route = useRoute()
 const router = useRouter()
@@ -186,13 +188,14 @@ onMounted(() => fetchColecao())
             <button @click.stop="addToCart(produto)">Adicionar à sacola</button>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div v-if="colecao?.imagem_mostruario" class="colecao-imagem-normal">
+      </div> <div v-if="colecao?.imagem_mostruario" class="colecao-imagem-normal">
       <img :src="colecao.imagem_mostruario" :alt="colecao.nome" />
     </div>
+    </div>
+
+   
   </div>
+  <Footer/>
 </template>
 
 
@@ -203,16 +206,17 @@ onMounted(() => fetchColecao())
 .colecao {
   display: flex;
   align-items: center;
-  gap: 108px;
-  padding: 0 15px; /* margem interna */
+  padding: 0 10px; /* margem interna */
+  justify-content: space-between;
+
 }
 
 .colecao h2 {
-  margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  
+
 }
+
 
 .icon-favorito {
   width: 22px;
@@ -226,14 +230,15 @@ onMounted(() => fetchColecao())
 }
 
 .colecao-imagem-normal {
-  margin-top: -400px;
   display: flex;
   justify-content: center;
 }
 
 .colecao-imagem-normal img {
-  width: 800px;
-  height: auto;
+  width: 540px;
+  height: 70%;
+  margin-top: 50px;
+  margin-left: 280px;
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, .40);
 }
@@ -243,8 +248,13 @@ onMounted(() => fetchColecao())
   margin-top: 16.5px;
 }
 
+
 .descricao-card {
-  width: 220px;
+  font-size: 0.85rem;
+  text-align: center;
+  color: #444;
+  height: 45px; /* altura fixa pra evitar deslocamento */
+  overflow: hidden;
 }
 
 .numero-valor {
@@ -258,58 +268,63 @@ onMounted(() => fetchColecao())
   margin-top: 2px;
 }
 
-.botao-card {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.botao-card button {
-  width: 170px;
-  height: 45px;
-  border: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, .20);
-  background-color: transparent;
-  border-radius: 40px;
-  font-size: 1rem;
-  font-weight: 600;
-  font-family: "Poppins", sans-serif;
-  cursor: pointer;
-}
-
-.botao-card button:hover {
-  background-color: #84827e;
-  border: #84827e;
-  transition: ease 0.4s;
-  color: #ffffff;
-}
-
 .titulo-card {
   font-size: 1.1rem;
-  margin-top: 3px;
   font-weight: 700;
+  margin: 0 auto; /* centraliza horizontalmente */
+  text-align: center;
 }
 
 .descricao-card {
   font-size: .9rem;
 }
 
+.botao-card {
+    display: flex;
+    justify-content: center;
+
+  }
+.botao-card button {
+    width: 170px;
+    height: 45px;
+    margin-top: 5px;
+    text-decoration: none;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    background-color: transparent;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.botao-card button:hover {
+    background-color: #84827e;
+    border: #84827e;
+    color: #ffffff;
+    
+}
 .imagem-card {
-  position: relative;
-  width: 180px;
-  height: 180px;
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 10px;
+
+    margin: 10px 0;
+  flex-shrink: 0;
 }
 
 .imagem-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
   position: absolute;
   top: 0;
-  left: 0;
-  width: 180px;
-  height: 180px;
+  left: 20px;
   transition: opacity 0.5s ease;
-  margin-left: 10px;
 }
-
 .imagem-card img.hover {
   opacity: 0;
 }
@@ -346,8 +361,9 @@ onMounted(() => fetchColecao())
 }
 
 .informacoes {
-  margin-left: 20px;
   font-family: "Poppins", sans-serif;
+  margin: 0 10px;
+   justify-content: center;
 }
 
 .card {
@@ -356,19 +372,27 @@ onMounted(() => fetchColecao())
   border-radius: 20px;
   cursor: pointer;
   transition: transform 0.2s ease;
+    background-color: #fff;
+
 }
 
+
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
+
+
+
+
 
 .card-container {
   display: grid;
   grid-template-columns: repeat(5, 250px);
   gap: 30px;
   font-family: "Poppins", sans-serif;
-  margin-top: 50px;
-  margin-left: 75px;
+ margin: 50px auto 0 auto; /* centraliza horizontalmente */
+  justify-content: center; 
 }
 
 .titulo {
@@ -376,15 +400,18 @@ onMounted(() => fetchColecao())
   width: 200vh;
   height: 130px;
   border-radius: 20px;
-  margin-left: 65px;
+   justify-content: center;
+  align-items: center;
+  display: flex;
+    margin: 100px auto 0 auto; /* topo | lados automáticos | baixo */
+
 }
 
 .titulo h1 {
   font-size: 4rem;
   font-family: "Poppins", sans-serif;
   color: #ffffff;
-  justify-content: center;
-  display: flex;
+
 }
 
 

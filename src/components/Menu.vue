@@ -922,6 +922,7 @@ onMounted(async () => {
 /*CARDS*/
 
 /*MENU*/
+/*MENU*/
 .menu-container {
     position: fixed;
     top: 0;
@@ -934,7 +935,7 @@ onMounted(async () => {
     align-items: center;
     background-color: #000000;
     z-index: 999;
-    box-shadow: 2px 2px 5px #d4d9e0, -2px -2px 5px #8d8d8d;
+    margin-left: 8px;
 }
 
 .menu {

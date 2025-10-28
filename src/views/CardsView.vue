@@ -3,6 +3,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
 import Menu from '@/components/Menu.vue'
+import Footer from "@/components/Footer.vue"
 
 const router = useRouter()
 const route = useRoute()
@@ -247,6 +248,7 @@ function goToProduto(produtoId) {
       </div>
     </div>
   </div>
+  <Footer/>
 </template>
 
 <style scoped>
