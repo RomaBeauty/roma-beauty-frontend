@@ -1103,6 +1103,7 @@ onMounted(fetchProduto);
   cursor: pointer;
  color: white;
   background: #84827e;
+  transition: all 0.5s ease;
 
 }
 
@@ -1112,6 +1113,7 @@ onMounted(fetchProduto);
   border: none;
   transition: ease 1s;
   box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s ease;
 }
 
 .icones {
