@@ -64,7 +64,7 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-// 🔗 API
+//  API
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 const token = localStorage.getItem("token");
 
@@ -73,14 +73,14 @@ const api = axios.create({
     headers: { Authorization: token ? `Bearer ${token}` : "" },
 });
 
-// 🔢 Refs
+//  Refs
 const pedidos = ref([]);
 const loading = ref(false);
 const search = ref("");
 const pagina = ref(1);
 const totalPaginas = ref(1);
 
-// 🧾 Cabeçalhos
+//  Cabeçalhos
 const headers = [
     { title: "ID", key: "id", sortable: true },
     { title: "Nome", key: "nome", sortable: true },
@@ -91,7 +91,7 @@ const headers = [
     { title: "Ações", key: "acoes", sortable: false },
 ];
 
-// 💰 Formatação
+//  Formatação
 function formatarMoeda(v) {
     const n = Number(v || 0);
     return n.toFixed(2).replace(".", ",");
@@ -102,7 +102,7 @@ function formatarData(dt) {
     return new Date(dt).toLocaleString("pt-BR");
 }
 
-// 📦 Buscar pedidos
+//  Buscar pedidos
 async function carregarPedidos() {
   loading.value = true;
   try {
@@ -113,7 +113,7 @@ async function carregarPedidos() {
       },
     });
 
-    // 👇 Adiciona ESTA LINHA
+    //  Adiciona ESTA LINHA
     console.log("📦 Dados recebidos:", res.data);
 
     // Detecta automaticamente o formato
@@ -143,7 +143,7 @@ const debouncedFetch = debounce(() => {
     carregarPedidos();
 }, 500);
 
-// 👁️ Ver detalhes
+//  Ver detalhes
 function verDetalhes(id) {
     router.push(`/pedido/${id}`);
 }

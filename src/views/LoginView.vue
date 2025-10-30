@@ -107,7 +107,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #000;
+  background-image:url('/public/imagem/todos.png');
   min-height: 100vh;
   padding: 2rem;
 }

@@ -9,7 +9,7 @@ import SacolaView from '@/views/SacolaView.vue'
 import FavoritoView from '@/views/FavoritoView.vue'
 import FuncionarioDashboardView from '@/views/FuncionarioDashboardView.vue'
 import PedidosView from '@/views/PedidosView.vue'
-
+import FinalizacaoView from '@/views/FinalizacaoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +18,11 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: () => import('../views/HomeView.vue')
+    },
+    {
+      path: '/finalizacao',
+      name: 'finalizacao',
+      component: FinalizacaoView
     },
     {
       path: '/',

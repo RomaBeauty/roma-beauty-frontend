@@ -708,7 +708,7 @@ color: #000;
 
 
 .imagem-principal img {
-    width: 216vh;
+    width: 206vh;
     border-radius: 30px;
     height: 95%;
     margin-top: 10px;

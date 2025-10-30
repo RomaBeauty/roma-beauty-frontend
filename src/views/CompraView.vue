@@ -135,9 +135,9 @@ const enviarFormulario = async () => {
 
 
 <template>
-   <Menu/>
+  <Menu />
 
-<div v-if="loading" class="carregando">Carregando produto...</div>
+  <div v-if="loading" class="carregando">Carregando produto...</div>
   <div class="container">
     <!-- lado esquerdo: formulário -->
     <div class="lado1">
@@ -179,7 +179,6 @@ const enviarFormulario = async () => {
           </div>
 
           <button type="submit">Enviar</button>
-
           <p v-if="mensagem" style="color: green; margin-top: 10px;">{{ mensagem }}</p>
           <p v-if="erro" style="color: red; margin-top: 10px;">{{ erro }}</p>
         </form>
@@ -202,7 +201,8 @@ const enviarFormulario = async () => {
             <p class="nome-produto">{{ item.produto?.nome }}</p>
             <p class="valor-produto">
               R$ {{ ((item.produto?.preco || 0) * (item.quantidade || 1)).toLocaleString('pt-BR', {
-                minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+                minimumFractionDigits: 2, maximumFractionDigits: 2
+              }) }}
             </p>
           </div>
         </div>
@@ -213,7 +213,8 @@ const enviarFormulario = async () => {
             <span>
               R$ {{ (totalCompra.value || total).toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
-              maximumFractionDigits: 2 }) }}
+                maximumFractionDigits: 2
+              }) }}
             </span>
           </div>
 
@@ -226,7 +227,8 @@ const enviarFormulario = async () => {
 <style scoped>
 .container {
   display: flex;
-  height: 100vh; /* ocupa toda a altura da tela */
+  height: 100vh;
+  /* ocupa toda a altura da tela */
   overflow: hidden;
   font-family: 'Poppins', sans-serif;
 }
@@ -260,9 +262,10 @@ const enviarFormulario = async () => {
   height: 100%;
 }
 
-.lado2 h2{
+.lado2 h2 {
   margin-top: 80px;
-  text-align: center;;
+  text-align: center;
+  ;
 }
 
 .formulario form {
@@ -334,7 +337,8 @@ button:hover {
   height: 100%;
   object-fit: cover;
   margin-top: 5px;
-  border: #555555 solid 1px;;
+  border: #555555 solid 1px;
+  ;
   border-radius: 6px;
 }
 
@@ -374,7 +378,7 @@ button:hover {
   margin-top: 20px;
 }
 
-.resumo span{
+.resumo span {
   font-size: 2rem;
   margin-top: 20px;
 }
