@@ -322,5 +322,103 @@ onMounted(() => {
 }
 
 
+/* ========== RESPONSIVIDADE ========== */
 
+/* Tablets (até 1024px) */
+@media (max-width: 1024px) {
+  .card-container {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+  }
+
+  .imagem-card {
+    width: 160px;
+    height: 160px;
+  }
+
+  .titulo-card {
+    font-size: 1rem;
+  }
+
+  .numero-valor {
+    font-size: 1.4rem;
+  }
+
+  .botao-card button {
+    height: 40px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Celulares (até 768px) */
+@media (max-width: 768px) {
+  .card-container {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 20px;
+    padding: 0 10px;
+  }
+
+  .card {
+    min-height: 380px;
+    padding: 10px;
+  }
+
+  .imagem-card {
+    width: 140px;
+    height: 140px;
+  }
+
+  .colecao h2 {
+    font-size: 0.9rem;
+  }
+
+  .titulo-card {
+    font-size: 0.95rem;
+  }
+
+  .descricao-card {
+    font-size: 0.8rem;
+  }
+
+  .numero-valor {
+    font-size: 1.3rem;
+  }
+
+  .botao-card button {
+    height: 38px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Celulares pequenos (até 480px) */
+@media (max-width: 480px) {
+  .card-container {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .imagem-card {
+    width: 120px;
+    height: 120px;
+  }
+
+  .titulo-card {
+    font-size: 0.9rem;
+  }
+
+  .descricao-card {
+    font-size: 0.75rem;
+  }
+
+  .numero-valor {
+    font-size: 1.2rem;
+  }
+
+  .botao-card button {
+    width: 100%;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+}
 </style>
+

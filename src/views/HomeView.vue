@@ -1371,4 +1371,394 @@ color: #000;
     color: #feb7d9;
     font-weight: bold;
 }
+/* =============== MEDIA QUERIES - RESPONSIVIDADE =============== */
+
+/* Adicionar estilo para componente Cards */
+.carregando {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+@media (max-width: 1400px) {
+  .card-container {
+    grid-template-columns: repeat(4, 250px);
+  }
+
+  .filtros {
+    margin-left: 150px;
+  }
+
+  .anuncio1 {
+    width: 150vh;
+  }
+
+  .anuncio1 p {
+    width: 120vh;
+    margin-left: 100px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .card-container {
+    grid-template-columns: repeat(3, 250px);
+  }
+
+  .anuncios-container {
+    margin-right: 40px;
+  }
+
+  .anuncio2 {
+    margin-left: 60px;
+  }
+
+  .anuncio1 {
+    width: 90%;
+    margin-left: 5%;
+  }
+
+  .anuncio1 p {
+    width: 80%;
+    margin-left: 10%;
+  }
+
+  .imagem-principal img {
+    width: 180vh;
+  }
+}
+
+@media (max-width: 992px) {
+  .card-container {
+    grid-template-columns: repeat(2, 250px);
+  }
+
+  .side-menu {
+    width: 70%;
+  }
+
+  .menu-container {
+    width: 95%;
+  }
+
+  .filtros {
+    flex-wrap: wrap;
+    margin-left: 50px;
+    justify-content: center;
+  }
+
+  .anuncios-container {
+    grid-template-areas:
+      'anuncio2'
+      'anuncio3'
+      'anuncio4';
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .anuncio2,
+  .anuncio3,
+  .anuncio4 {
+    width: 90%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .beneficios {
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .imagem-principal {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  .imagem-principal img {
+    width: 150vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    grid-template-columns: repeat(2, 220px);
+    gap: 20px;
+    margin-left: 0;
+  }
+
+  .card {
+    height: 400px;
+    padding: 10px;
+  }
+
+  .menu-container {
+    width: 93%;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .nome-logo img {
+    width: 100px;
+    height: 60px;
+  }
+
+  .side-menu {
+    width: 85%;
+  }
+
+  .categorias {
+    margin-left: 20px;
+  }
+
+  .produtos-home h1,
+  .filtragem h1 {
+    font-size: 1.5rem;
+  }
+
+  .anuncio1 h1 {
+    font-size: 2rem;
+  }
+
+  .anuncio1 {
+    height: auto;
+    padding: 30px 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: calc(100% - 40px);
+  }
+
+  .botao-anuncio1 {
+    width: 200px;
+  }
+
+  .imagem-principal {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .imagem-principal img {
+    width: 100%;
+    height: auto;
+  }
+
+  .valor-card {
+    margin-left: 70px;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-container {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+    margin-left: 0;
+  }
+
+  .card {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .menu-container {
+    width: calc(100% - 20px);
+    height: 60px;
+    margin: 5px 10px;
+  }
+
+  .menu-container > .menu:first-child {
+    margin-left: 15px;
+  }
+
+  .icons-menu {
+    grid-template-columns: 40px 40px 40px;
+    margin-right: 15px;
+  }
+
+  .icons-menu i,
+  .menu i {
+    font-size: 1.2rem;
+  }
+
+  .side-menu {
+    width: 95%;
+  }
+
+  .menu-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .categorias,
+  .subcategorias {
+    width: 100%;
+    border-right: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .side-menu h3 {
+    font-size: 1.5rem;
+  }
+
+  .side-menu li {
+    font-size: 1rem;
+  }
+
+  .overlay button {
+    margin-left: calc(100% - 50px);
+    font-size: 1.5rem;
+  }
+
+  .produtos-home h1,
+  .filtragem h1 {
+    font-size: 1.3rem;
+    padding: 0 15px;
+  }
+
+  .filtros {
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0;
+    gap: 20px;
+  }
+
+  .filtro {
+    width: 200px;
+  }
+
+  .anuncio1 {
+    width: calc(100% - 30px);
+    padding: 20px 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .anuncio1 h1 {
+    font-size: 1.5rem;
+  }
+
+  .anuncio1 p {
+    width: 90%;
+    margin-left: 5%;
+    font-size: 0.9rem;
+  }
+
+  .anuncios-container {
+    margin-right: 0;
+    padding: 0 15px;
+  }
+
+  .anuncio2 {
+    height: 400px;
+    margin-left: 0;
+  }
+
+  .anuncio3,
+  .anuncio4 {
+    height: 250px;
+  }
+
+  .beneficios {
+    flex-direction: column;
+    gap: 30px;
+    margin: 40px 0;
+  }
+
+  .beneficios div {
+    width: 100%;
+  }
+
+  .marquee {
+    font-size: 0.9rem;
+  }
+
+  .voltar-topo {
+    width: 40px;
+    height: 40px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 1.2rem;
+  }
+
+  .imagem-principal {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .valor-card {
+    margin-left: 50px;
+  }
+
+  .botao-card button {
+    width: 150px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .nome-logo img {
+    width: 80px;
+    height: 50px;
+  }
+
+  .menu-container {
+    height: 55px;
+  }
+
+  .icons-menu {
+    grid-template-columns: 35px 35px 35px;
+    margin-right: 10px;
+  }
+
+  .icons-menu i,
+  .menu i {
+    font-size: 1rem;
+  }
+
+  .card {
+    height: 380px;
+  }
+
+  .imagem-card {
+    width: 150px;
+    height: 150px;
+  }
+
+  .titulo-card {
+    font-size: 1rem;
+  }
+
+  .descricao-card {
+    font-size: 0.8rem;
+    height: 50px;
+  }
+
+  .valor-card {
+    margin-left: 30px;
+  }
+
+  .escrita-valor {
+    font-size: 1rem;
+  }
+
+  .numero-valor {
+    font-size: 1.5rem;
+  }
+
+  .anuncio1 h1 {
+    font-size: 1.3rem;
+  }
+
+  .anuncio1 p {
+    font-size: 0.85rem;
+  }
+
+  .botao-anuncio1 {
+    width: 180px;
+    font-size: 0.9rem;
+  }
+}
 </style>
+
