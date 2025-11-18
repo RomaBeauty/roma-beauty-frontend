@@ -2,9 +2,8 @@ self.addEventListener("install", event => {
     event.waitUntil(
       caches.open("roma-cache-v1").then(cache => {
         return cache.addAll([
-          "/",
-          "/index.html",
-          "/manifest.webmanifest",
+          "/",                        // OK
+          "/manifest.webmanifest",    // EXISTE
           "/icons/icon-192.png",
           "/icons/icon-512.png"
         ]);
