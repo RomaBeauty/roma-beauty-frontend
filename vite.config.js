@@ -13,6 +13,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
+        'favicon.ico',
         'favicon.png',
         'apple-touch-icon.png',
         'masked-icon.png'
@@ -27,9 +28,11 @@ export default defineConfig({
         orientation: 'portrait',
         background_color: '#000000',
         theme_color: '#000000',
+      
         launch_handler: {
           client_mode: ['navigate-existing', 'auto'],
         },
+      
         icons: [
           {
             src: 'icons/icon-192.png',
@@ -41,7 +44,7 @@ export default defineConfig({
             src: 'icons/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'maskable'
+            purpose: 'maskable any'
           }
         ]
       },
